@@ -1,0 +1,1379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A self-paced walk-through for students on studying with Gemini Notebook, with check-yourself questions.">
+<meta property="og:title" content="Brain First Walk-through">
+<meta property="og:description" content="A self-paced walk-through for students on studying with Gemini Notebook, with check-yourself questions.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>[hidden] { display: none !important; }</style>
+<title>Brain First Walk-through</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Silkscreen:wght@400;700&display=swap">
+<style>
+/* Self-paced walk-through of the "Brain First, Bot Second" talk. Visual system copied from the deck (../index.html); walk-through layout additions are at the end. */
+:root {
+  --bg: #0a0c10;
+  --card: #12151b;
+  --inset: #191e26;
+  --line: #35404d;
+  --grid: #11151b;
+  --fg: #e8ecef;
+  --muted: #8a94a0;
+  --red: #ff5c74;
+  --red-soft: #3a1820;
+  --cyan: #33d4ff;
+  --cyan-text: #5ddcff;
+  --cyan-soft: #0f2d38;
+  --green: #9dff5a;
+  --green-soft: #1d3312;
+  --yellow: #ffc247;
+  --yellow-soft: #3a2c0c;
+  --clawd: #d77757;
+  --codex: #4d74f2;
+  --paper: #ffffff;
+  --on-accent: #0a0c10;
+  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
+  --font-pixel: "Silkscreen", "Courier New", monospace;
+  --hud-h: 3.5rem;
+  color-scheme: dark;
+}
+
+html { font-size: 100%; background: var(--bg); scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 2rem 2rem;
+  color: var(--fg);
+  font: 400 1.125rem/1.55 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+* { box-sizing: border-box; }
+img, svg { max-width: 100%; display: block; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--cyan-text); outline-offset: 3px; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+[hidden] { display: none !important; }
+
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.625rem 0.875rem; font: 500 0.8125rem/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.num { font-family: var(--font-pixel); font-size: 0.875rem; color: var(--fg); letter-spacing: .04em; }
+.badge { padding: 0.3125rem 0.625rem 4px; border: 1px solid currentColor; font: 400 0.75rem/1 var(--font-pixel); letter-spacing: .06em; }
+.b-red { color: var(--red); background: var(--red-soft); }
+.b-cyan { color: var(--cyan-text); background: var(--cyan-soft); }
+.b-green { color: var(--green); background: var(--green-soft); }
+.b-yellow { color: var(--yellow); background: var(--yellow-soft); }
+
+h1, h2, h3 { margin: 0; text-wrap: balance; letter-spacing: -.025em; }
+h1 { font-size: clamp(3rem, 8.4vw, 7.25rem); line-height: .98; font-weight: 700; }
+h2 { font-size: clamp(2rem, 4.4vw, 3.9rem); line-height: 1.04; font-weight: 700; }
+h3 { font-size: clamp(1.15rem, 1.7vw, 1.45rem); line-height: 1.2; font-weight: 600; letter-spacing: -.01em; }
+.lede { font-size: clamp(1.1rem, 1.7vw, 1.45rem); line-height: 1.45; color: var(--fg); max-width: 40ch; }
+.body { font-size: clamp(1rem, 1.3vw, 1.18rem); color: var(--fg); max-width: 60ch; }
+.small { font: 400 0.8125rem/1.5 var(--font-mono); color: var(--muted); }
+.hl { padding: 0 .14em; box-decoration-break: clone; -webkit-box-decoration-break: clone; color: var(--on-accent); }
+.hl-red { background: var(--red); }
+.hl-cyan { background: var(--cyan); }
+.hl-green { background: var(--green); }
+.hl-yellow { background: var(--yellow); }
+.mono { font-family: var(--font-mono); }
+.pixel { font-family: var(--font-pixel); }
+
+.card { background: var(--card); border: 1px solid var(--line); padding: clamp(1rem, 2vw, 1.5rem); min-width: 0; }
+.card-top-red { border-top: 3px solid var(--red); }
+.card-top-cyan { border-top: 3px solid var(--cyan); }
+.card-top-green { border-top: 3px solid var(--green); }
+.card-top-yellow { border-top: 3px solid var(--yellow); }
+.label { font: 500 0.75rem/1.3 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+
+.cols { display: grid; gap: clamp(1.25rem, 3vw, 2.75rem); grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: center; }
+@media (max-width: 860px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- stickers, bubbles, Clawd ---------- */
+.sticker { background: var(--card); border: 2px solid var(--fg); box-shadow: 0.4375rem 0.4375rem 0 var(--red); transform: rotate(var(--tilt, -2deg)); transition: transform .25s ease, box-shadow .25s ease; }
+.sticker:hover { transform: rotate(0deg) translateY(-4px); box-shadow: 0.625rem 0.625rem 0 var(--red); }
+.sh-cyan { box-shadow: 0.4375rem 0.4375rem 0 var(--cyan); }
+.sh-cyan:hover { box-shadow: 0.625rem 0.625rem 0 var(--cyan); }
+.sh-green { box-shadow: 0.4375rem 0.4375rem 0 var(--green); }
+.sh-green:hover { box-shadow: 0.625rem 0.625rem 0 var(--green); }
+.sh-yellow { box-shadow: 0.4375rem 0.4375rem 0 var(--yellow); }
+.sh-yellow:hover { box-shadow: 0.625rem 0.625rem 0 var(--yellow); }
+
+.bubble { position: relative; display: inline-block; max-width: 22ch; padding: 0.5625rem 0.75rem 0.5rem; background: var(--fg); color: var(--on-accent); font: 400 0.8125rem/1.35 var(--font-pixel); letter-spacing: .02em; box-shadow: 4px 4px 0 var(--line); text-align: left; }
+.bubble::after { content: ""; position: absolute; left: 1.375rem; bottom: -0.625rem; border: 0.625rem solid transparent; border-top-color: var(--fg); border-bottom: 0; }
+.bubble:empty { display: none; }
+
+.clawd-svg { width: 100%; height: auto; image-rendering: pixelated; overflow: visible; }
+.clawd-svg .c-fill { fill: var(--clawd); }
+.clawd-svg .c-eyes { fill: var(--on-accent); transform-box: fill-box; transform-origin: center; animation: blink 4.5s infinite; }
+.clawd-svg .c-legs-a { animation: step-a .5s steps(1) infinite; }
+.clawd-svg .c-legs-b { animation: step-b .5s steps(1) infinite; }
+@keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.15); } }
+@keyframes step-a { 0% { transform: translateY(0); } 50% { transform: translateY(-.6px); } }
+@keyframes step-b { 0% { transform: translateY(-.6px); } 50% { transform: translateY(0); } }
+@keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -0.375rem; } }
+.bob { animation: bob 2.6s ease-in-out infinite; }
+.m-name { font: 400 0.75rem/1 var(--font-pixel); color: var(--muted); letter-spacing: .05em; }
+.byline { font: 500 0.9375rem/1.4 var(--font-mono); color: var(--muted); }
+
+/* ---------- faces ---------- */
+.who { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1.125rem, 2.6vw, 2.125rem); }
+@media (max-width: 980px) { .who { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .who { grid-template-columns: minmax(0, 1fr); } }
+.who figure { margin: 0; display: grid; grid-template-rows: auto 1fr; }
+.who .shot { aspect-ratio: 1 / 1; display: grid; place-items: center; overflow: hidden; border-bottom: 2px solid var(--fg); }
+.who .shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot-clawd { background: var(--inset); padding: 22%; }
+.shot-jolly { background: var(--paper); }
+.shot-jolly img { object-fit: contain !important; }
+.shot-dots img { object-position: 20% 60%; }
+.who figcaption { padding: 0.875rem 1rem 1rem; display: grid; gap: 0.375rem; }
+.who .name { font: 700 1.25rem/1 var(--font-pixel); letter-spacing: .02em; }
+.who .maker { font: 500 0.75rem/1.3 var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.who .what { font-size: 0.9375rem; line-height: 1.4; }
+.ask-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.875rem 1.25rem; }
+.ask { font: 400 clamp(0.9375rem, 1.4vw, 1.125rem)/1.3 var(--font-pixel); padding: 0.75rem 1rem; border: 2px dashed var(--yellow); color: var(--yellow); }
+
+/* ---------- cute is a decision ---------- */
+.quote { border-left: 4px solid var(--yellow); padding: 0.375rem 0 0.375rem 1.125rem; display: grid; gap: 0.5rem; }
+.quote p:first-child { font-size: clamp(1.15rem, 1.9vw, 1.55rem); line-height: 1.4; }
+.thinker { display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.125rem; background: var(--red); color: var(--on-accent); font: 700 clamp(1.05rem, 1.7vw, 1.35rem)/1.2 var(--font-sans); justify-self: start; }
+.thinker .pixel { font-weight: 400; font-size: .85em; }
+.jolly-stage { display: grid; justify-items: center; gap: 1.125rem; padding-top: 4.375rem; position: relative; }
+.jolly-stage .sticker { width: min(100%, 18.75rem); background: var(--paper); }
+.jolly-stage .sticker img { width: 100%; aspect-ratio: 330 / 430; object-fit: contain; }
+.jolly-stage .bubble { position: absolute; top: 0; left: 50%; transform: translateX(-20%) rotate(-3deg); font-size: 1rem; }
+
+/* ---------- your course is the source ---------- */
+.src-card { background: var(--card); border: 1px solid var(--line); border-top: 3px solid var(--red); display: grid; }
+.src-card .src-head { display: flex; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; padding: 0.625rem 1.125rem; border-bottom: 1px solid var(--line); font: 500 0.75rem/1.4 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.src-card .src-body { padding: 1.125rem; display: grid; gap: 0.875rem; }
+.src-card .src-text { font-size: 0.9688rem; color: var(--muted); line-height: 1.5; }
+.src-card .src-rule { font-size: 1rem; }
+.key-dot { display: inline-block; width: 0.625rem; height: 0.625rem; margin-right: 0.375rem; vertical-align: -1px; }
+.facts { display: grid; gap: 0.75rem; }
+.fact { display: grid; grid-template-columns: 2.125rem minmax(0, 1fr); gap: 0.75rem; align-items: start; font-size: clamp(1rem, 1.25vw, 1.12rem); }
+.fact .pixel { font-size: 0.8125rem; padding-top: 4px; color: var(--cyan-text); }
+.host-row { display: flex; align-items: flex-end; gap: 1rem; margin-top: 0.375rem; }
+.host-row .clawd-wrap { width: 5.75rem; flex: 0 0 auto; }
+.host-row .bubble { margin-bottom: 1.875rem; }
+
+/* ---------- Gemini Notebook ---------- */
+.rename { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.375rem 1rem; }
+.rename s { font: 500 clamp(1.1rem, 2vw, 1.6rem)/1.2 var(--font-mono); color: var(--muted); text-decoration-color: var(--red); text-decoration-thickness: 3px; }
+.stamp { font: 400 0.75rem/1 var(--font-pixel); color: var(--red); border: 2px solid var(--red); padding: 0.375rem 0.5rem 0.3125rem; transform: rotate(-4deg); display: inline-block; }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 760px) { .tiles { grid-template-columns: minmax(0, 1fr); } }
+.tile { display: grid; gap: 0.5rem; align-content: start; }
+.tile .big { font: 700 clamp(1.6rem, 3vw, 2.4rem)/1 var(--font-pixel); }
+.tile p { font-size: 0.9688rem; line-height: 1.45; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip { font: 500 0.8438rem/1 var(--font-mono); padding: 0.5rem 0.6875rem; border: 1px solid var(--line); background: var(--inset); }
+.chip::before { content: "▸ "; color: var(--green); }
+.notes-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 760px) { .notes-row { grid-template-columns: minmax(0, 1fr); } }
+.note { display: flex; gap: 0.75rem; align-items: baseline; font-size: 0.9688rem; line-height: 1.45; }
+.note .pixel { font-size: 0.75rem; color: var(--yellow); flex: 0 0 auto; }
+.demo { justify-self: start; font: 400 0.8125rem/1 var(--font-pixel); padding: 0.625rem 0.75rem 0.5625rem; background: var(--green); color: var(--on-accent); }
+
+/* ---------- evidence ---------- */
+.studies { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 1.25rem; }
+@media (max-width: 900px) { .studies { grid-template-columns: minmax(0, 1fr); } }
+.study { display: grid; gap: 0.875rem; align-content: start; }
+.study .cite { font: 400 0.8125rem/1.45 var(--font-mono); color: var(--muted); }
+.decides { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
+.decides .line { font: 700 clamp(1.4rem, 2.6vw, 2.2rem)/1.15 var(--font-sans); }
+.mini-pet { width: 4.375rem; flex: 0 0 auto; border: 2px solid var(--fg); box-shadow: 4px 4px 0 var(--codex); }
+
+.res { display: grid; }
+.res-head, .res-row { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; align-items: center; }
+.res-head span { font: 500 0.75rem/1.3 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding-bottom: 0.5rem; }
+.res-row { padding: 1rem 0; border-top: 1px solid var(--line); }
+.res-row p { font: 600 clamp(1rem, 1.35vw, 1.2rem)/1.3 var(--font-sans); color: var(--yellow); }
+.res-num { display: grid; gap: 0.3rem; font: 700 clamp(1.8rem, 3.2vw, 2.8rem)/1 var(--font-sans); letter-spacing: -.02em; }
+.res-num small { font: 500 0.8125rem/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.good { color: var(--green); } .bad { color: var(--red); } .gold { color: var(--yellow); }
+.twice-big { font: 700 clamp(4.5rem, 10vw, 8rem)/.9 var(--font-sans); color: var(--yellow); letter-spacing: -.04em; }
+
+/* ---------- how learning works ---------- */
+.cycle-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.cycle-strip .step { font: 400 clamp(0.8125rem, 1.3vw, 1rem)/1 var(--font-pixel); padding: 0.6875rem 0.8125rem 0.625rem; border: 2px solid var(--fg); background: var(--card); }
+.cycle-strip .arr { color: var(--muted); font-family: var(--font-mono); }
+.cycle-strip .loop { color: var(--green); font: 400 0.8125rem/1 var(--font-pixel); }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+@media (max-width: 760px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.two .card { display: grid; gap: 0.625rem; align-content: start; }
+.two .card p { font-size: clamp(1rem, 1.25vw, 1.12rem); line-height: 1.5; }
+.vs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.625rem; margin-top: 4px; }
+.vs div { padding: 0.625rem 0.75rem; border: 1px solid var(--line); background: var(--inset); font: 500 0.8438rem/1.4 var(--font-mono); }
+.vs .no { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--red); }
+.vs .yes { border-color: var(--green); color: var(--green); }
+
+/* ---------- brain first ---------- */
+.steps3 { display: grid; gap: 0.875rem; counter-reset: s; }
+.step3 { display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: 1rem; align-items: center; padding: 0.875rem 1.125rem; background: var(--card); border: 1px solid var(--line); }
+.step3 .n { font: 700 2.75rem/1 var(--font-pixel); }
+.step3 h3 { margin-bottom: 2px; }
+.step3 p { font-size: clamp(.98rem, 1.2vw, 1.1rem); color: var(--muted); }
+.st-red .n { color: var(--red); } .st-cyan .n { color: var(--cyan-text); } .st-green .n { color: var(--green); }
+.st-red { border-left: 4px solid var(--red); } .st-cyan { border-left: 4px solid var(--cyan); } .st-green { border-left: 4px solid var(--green); }
+.pet-stage { display: grid; justify-items: center; gap: 1.125rem; }
+.pet-stage .sticker { width: min(70%, 15rem); padding: 0; box-shadow: 0.4375rem 0.4375rem 0 var(--codex); }
+.pet-stage .sticker img { width: 100%; aspect-ratio: 280 / 350; object-fit: cover; }
+.status { display: inline-flex; align-items: center; gap: 0.625rem; padding: 0.625rem 0.875rem; background: var(--card); border: 2px solid var(--fg); font: 400 0.9375rem/1 var(--font-pixel); }
+.status .dot { width: 0.75rem; height: 0.75rem; background: var(--muted); }
+.status[data-s="run"] .dot { background: var(--cyan); }
+.status[data-s="input"] { border-color: var(--yellow); color: var(--yellow); }
+.status[data-s="input"] .dot { background: var(--yellow); animation: pulse 1s steps(2) infinite; }
+.status[data-s="ready"] .dot { background: var(--green); }
+.status[data-s="blocked"] .dot { background: var(--red); }
+@keyframes pulse { 50% { opacity: .2; } }
+.states { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+.states button { cursor: pointer; font: 500 0.7812rem/1 var(--font-mono); padding: 0.5rem 0.625rem; border: 1px solid var(--line); background: var(--inset); color: var(--muted); }
+.states button[aria-pressed="true"] { color: var(--on-accent); background: var(--yellow); border-color: var(--yellow); }
+.pet-caption { font: 400 0.9375rem/1.45 var(--font-mono); color: var(--muted); text-align: center; max-width: 32ch; }
+
+/* ---------- study cycle ---------- */
+.cycle-wrap { display: grid; grid-template-columns: minmax(0, 26.25rem) minmax(0, 1fr); gap: clamp(1.25rem, 3vw, 3rem); align-items: center; }
+@media (max-width: 900px) { .cycle-wrap { grid-template-columns: minmax(0, 1fr); justify-items: center; } }
+.ring { position: relative; width: min(100%, 26.25rem); aspect-ratio: 1 / 1; }
+.ring svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ring .track { fill: none; stroke: var(--line); stroke-width: .6; stroke-dasharray: 2 2; animation: spin 18s linear infinite; transform-origin: 50% 50%; }
+@keyframes spin { to { stroke-dashoffset: -40; } }
+.ring .center { position: absolute; inset: 30%; display: grid; place-content: center; text-align: center; gap: 4px; }
+.ring .center b { font: 700 clamp(0.9375rem, 2vw, 1.25rem)/1.1 var(--font-pixel); }
+.ring .center span { font: 400 0.75rem/1.3 var(--font-mono); color: var(--muted); }
+.node { position: absolute; transform: translate(-50%, -50%); cursor: pointer; font: 400 clamp(0.75rem, 1.35vw, 0.9375rem)/1 var(--font-pixel); padding: 0.75rem 0.75rem 0.6875rem; border: 2px solid var(--fg); background: var(--card); color: var(--fg); box-shadow: 4px 4px 0 var(--line); transition: transform .15s ease; }
+.node:hover { transform: translate(-50%, -50%) scale(1.06); }
+.node[aria-selected="true"] { background: var(--green); color: var(--on-accent); box-shadow: 4px 4px 0 var(--fg); }
+.node:nth-of-type(1) { left: 50%; top: 10%; }
+.node:nth-of-type(2) { left: 88%; top: 37.6%; }
+.node:nth-of-type(3) { left: 73.5%; top: 82.4%; }
+.node:nth-of-type(4) { left: 26.5%; top: 82.4%; }
+.node:nth-of-type(5) { left: 12%; top: 37.6%; }
+.detail { display: grid; gap: 0.875rem; align-content: start; min-height: 20rem; width: 100%; }
+.detail .k { font: 400 0.75rem/1 var(--font-pixel); color: var(--green); letter-spacing: .06em; }
+.detail h3 { font-size: clamp(1.6rem, 2.6vw, 2.2rem); }
+.detail .move { font-size: clamp(1.02rem, 1.35vw, 1.2rem); line-height: 1.5; }
+.prompt { font: 500 clamp(0.875rem, 1.2vw, 1rem)/1.5 var(--font-mono); padding: 0.875rem 1rem; background: var(--inset); border: 1px solid var(--line); border-left: 4px solid var(--cyan); }
+.prompt::before { content: "TRY › "; font-family: var(--font-pixel); font-size: 0.75rem; color: var(--cyan-text); }
+.why { font-size: 0.9688rem; color: var(--muted); line-height: 1.5; }
+.summary-note { font: 400 0.8125rem/1.4 var(--font-pixel); color: var(--yellow); }
+
+/* ---------- flip cards ---------- */
+.flips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.875rem; }
+@media (max-width: 1000px) { .flips { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .flips { grid-template-columns: minmax(0, 1fr); } }
+.flip { cursor: pointer; padding: 0; border: 0; background: none; text-align: left; perspective: 56.25rem; min-height: 9.375rem; }
+.flip-inner { display: grid; height: 100%; transition: transform .45s ease; transform-style: preserve-3d; }
+.flip[aria-pressed="true"] .flip-inner { transform: rotateY(180deg); }
+.face { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; padding: 1rem; border: 2px solid var(--line); background: var(--card); display: grid; gap: 0.625rem; align-content: space-between; }
+.face.front { font: 500 clamp(0.8438rem, 1.15vw, 0.9688rem)/1.45 var(--font-mono); }
+.face.front .tap { font: 400 0.6875rem/1 var(--font-pixel); color: var(--muted); }
+.face.back { transform: rotateY(180deg); align-content: start; }
+.face.back .verdict { font: 700 0.9375rem/1.1 var(--font-pixel); padding: 0.4375rem 0.5625rem 0.375rem; justify-self: start; color: var(--on-accent); }
+.face.back p { font-size: 0.9062rem; line-height: 1.45; }
+.v-with .back { border-color: var(--green); } .v-with .verdict { background: var(--green); }
+.v-for .back { border-color: var(--red); } .v-for .verdict { background: var(--red); }
+.v-mid .back { border-color: var(--yellow); } .v-mid .verdict { background: var(--yellow); }
+.flip-tools { display: flex; flex-wrap: wrap; gap: 0.625rem 1rem; align-items: center; }
+.btn { cursor: pointer; font: 400 0.8125rem/1 var(--font-pixel); padding: 0.6875rem 0.875rem 0.625rem; border: 2px solid var(--fg); background: var(--card); color: var(--fg); box-shadow: 3px 3px 0 var(--line); }
+.btn:hover { background: var(--inset); }
+.btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--line); }
+.btn-primary { background: var(--green); color: var(--on-accent); border-color: var(--green); box-shadow: 3px 3px 0 var(--fg); }
+.btn-primary:hover { background: var(--green); filter: brightness(1.08); }
+.legend { display: flex; flex-wrap: wrap; gap: 0.375rem 1rem; font: 400 0.8125rem/1.4 var(--font-mono); color: var(--muted); }
+
+/* ---------- sprint ---------- */
+.sprint { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(1.25rem, 3vw, 2.5rem); align-items: start; }
+@media (max-width: 900px) { .sprint { grid-template-columns: minmax(0, 1fr); } }
+.sprint-steps { display: grid; gap: 0.5rem; }
+.sp { display: grid; grid-template-columns: 3.875rem minmax(0, 1fr); gap: 0.875rem; padding: 0.6875rem 0.875rem; border: 1px solid var(--line); background: var(--card); transition: background .2s, border-color .2s; }
+.sp .t { font: 400 0.8125rem/1.3 var(--font-pixel); color: var(--muted); padding-top: 3px; }
+.sp b { font-weight: 600; }
+.sp p { font-size: clamp(.95rem, 1.15vw, 1.05rem); line-height: 1.45; }
+.sp.on { background: var(--yellow-soft); border-color: var(--yellow); }
+.sp.on .t { color: var(--yellow); }
+.sp.done { opacity: .55; }
+.exit { padding: 0.75rem 0.875rem; border: 2px dashed var(--green); font-size: clamp(.98rem, 1.2vw, 1.08rem); }
+.exit .pixel { color: var(--green); font-size: 0.75rem; margin-right: 0.375rem; }
+.timer { display: grid; gap: 0.875rem; padding: 1.25rem; background: var(--card); border: 2px solid var(--fg); box-shadow: 0.5rem 0.5rem 0 var(--yellow); }
+.timer .now { font: 400 0.75rem/1.3 var(--font-pixel); color: var(--yellow); min-height: 1.3em; }
+.clock { font: 700 clamp(3.6rem, 8vw, 6rem)/1 var(--font-pixel); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+.step-left { font: 500 0.875rem/1.3 var(--font-mono); color: var(--muted); }
+.segbar { display: flex; height: 1rem; gap: 3px; }
+.seg { position: relative; background: var(--inset); overflow: hidden; }
+.seg i { position: absolute; inset: 0 auto 0 0; width: 0; }
+.seg:nth-child(1) i { background: var(--red); }
+.seg:nth-child(2) i { background: var(--cyan); }
+.seg:nth-child(3) i { background: var(--green); }
+.seg:nth-child(4) i { background: var(--yellow); }
+.seg:nth-child(5) i { background: var(--fg); }
+.timer-btns { display: flex; flex-wrap: wrap; gap: 0.625rem; }
+.sound { display: flex; align-items: center; gap: 0.5rem; font: 400 0.8125rem/1.3 var(--font-mono); color: var(--muted); }
+.sound input { width: 1.125rem; height: 1.125rem; accent-color: var(--yellow); }
+
+/* ---------- receipts ---------- */
+.receipt { justify-self: center; width: min(100%, 25rem); background: var(--paper); color: var(--on-accent); padding: 1.375rem 1.375rem 1.625rem; font: 500 0.9062rem/1.5 var(--font-mono); transform: rotate(1.5deg); box-shadow: 0.5rem 0.5rem 0 var(--cyan); position: relative; }
+.receipt::after { content: ""; position: absolute; left: 0; right: 0; bottom: -0.625rem; height: 0.625rem; background: linear-gradient(-45deg, transparent 0.3125rem, var(--paper) 0) 0 0 / 0.625rem 0.625rem, linear-gradient(45deg, transparent 0.3125rem, var(--paper) 0) 0 0 / 0.625rem 0.625rem; }
+.receipt h3 { font: 700 1.125rem/1.1 var(--font-pixel); text-align: center; letter-spacing: .04em; }
+.receipt .rc-sub { text-align: center; font-size: 0.75rem; margin-top: 4px; }
+.receipt hr { border: 0; border-top: 2px dashed var(--on-accent); margin: 0.875rem 0; }
+.receipt li { display: grid; grid-template-columns: 1.625rem minmax(0, 1fr); gap: 0.5rem; padding: 4px 0; }
+.receipt li label { cursor: pointer; }
+.receipt input { width: 1.125rem; height: 1.125rem; accent-color: var(--on-accent); margin: 3px 0 0; }
+.receipt .total { display: flex; justify-content: space-between; font-weight: 600; }
+.receipt .thanks { text-align: center; font: 400 0.75rem/1.4 var(--font-pixel); margin-top: 0.75rem; }
+.check-left { display: grid; gap: 1.125rem; }
+.jolly-host { display: flex; align-items: flex-end; gap: 0.875rem; }
+.jolly-host img { width: 6.5rem; aspect-ratio: 330 / 430; object-fit: contain; background: var(--paper); border: 2px solid var(--fg); box-shadow: 0.3125rem 0.3125rem 0 var(--yellow); transform: rotate(-3deg); }
+.jolly-host .bubble { margin-bottom: 4rem; font-size: 0.9375rem; }
+.fails { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.fails span { font: 500 0.8438rem/1 var(--font-mono); padding: 0.5rem 0.625rem; border: 1px solid var(--red); color: var(--red); background: var(--red-soft); }
+
+/* ---------- five rules ---------- */
+.rails { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.875rem; }
+@media (max-width: 1100px) { .rails { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .rails { grid-template-columns: minmax(0, 1fr); } }
+.rail { display: grid; gap: 0.625rem; align-content: start; position: relative; }
+.rail .ico { font: 700 1.625rem/1 var(--font-pixel); }
+.rail h3 { font-size: clamp(1.05rem, 1.35vw, 1.22rem); }
+.rail p { font-size: 0.9375rem; line-height: 1.45; color: var(--muted); }
+.rail.dashed { border-style: dashed; }
+.blocked-pet { display: flex; align-items: center; gap: 0.625rem; margin-top: 4px; }
+.blocked-pet img { width: 2.75rem; border: 2px solid var(--fg); }
+.blocked-pet .status { font-size: 0.75rem; padding: 0.4375rem 0.5625rem; }
+
+/* ---------- across your term ---------- */
+.term { display: grid; gap: 1.25rem; }
+.strip { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.375rem; padding-top: 4.5rem; }
+.strip span:not(.walker) { display: grid; place-items: center; height: 2.5rem; font: 700 0.8125rem/1 var(--font-pixel); color: var(--on-accent); }
+.strip .c-try { background: var(--cyan); } .strip .c-teach { background: var(--red); } .strip .c-choose { background: var(--green); } .strip .c-look { background: var(--yellow); }
+.walker { position: absolute; top: 0.25rem; left: 0; width: 5.5rem; animation: walk 14s linear infinite alternate; }
+@keyframes walk { from { left: 0; } to { left: calc(100% - 5.5rem); } }
+.phases { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 860px) { .phases { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .phases { grid-template-columns: minmax(0, 1fr); } .strip span { font-size: 0.625rem; } }
+.phase { padding: 1.125rem; display: grid; gap: 0.5rem; align-content: start; min-width: 0; border-top: 0.375rem solid currentColor; background: var(--card); }
+.phase .ph-when { font: 400 0.8125rem/1 var(--font-pixel); }
+.phase h3 { font-size: clamp(1.15rem, 1.6vw, 1.45rem); color: var(--fg); }
+.phase p { font-size: 1.0625rem; line-height: 1.45; color: var(--muted); }
+.ph-try { color: var(--cyan-text); } .ph-teach { color: var(--red); } .ph-choose { color: var(--green); } .ph-look { color: var(--yellow); }
+
+/* ---------- your move ---------- */
+.moves { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 860px) { .moves { grid-template-columns: minmax(0, 1fr); } }
+.move-card { display: grid; gap: 0.5rem; align-content: start; }
+.move-card .when { font: 400 0.8125rem/1 var(--font-pixel); }
+.move-card p { font-size: clamp(1rem, 1.25vw, 1.12rem); line-height: 1.45; }
+.qa { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.25rem; }
+.wave { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1.125rem; padding-top: 1.875rem; }
+.wave .wv { display: block; width: 6rem; }
+.wave .wv.wide { width: 11rem; }
+.wave img { width: 100%; border: 2px solid var(--fg); }
+.wave .w-jolly img { background: var(--paper); aspect-ratio: 330 / 430; object-fit: contain; }
+.wave .w-codex img { aspect-ratio: 280 / 350; object-fit: cover; }
+.wave .w-dots img { aspect-ratio: 638 / 300; object-fit: cover; }
+.wave .w-clawd .frame { display: block; background: var(--inset); border: 2px solid var(--fg); padding: 0.75rem 0.5rem 0.5rem; }
+@keyframes hop { 0%, 100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-0.875rem) rotate(-4deg); } 60% { transform: translateY(0) rotate(3deg); } }
+.is-current .wave .wv { animation: hop 1.4s ease-in-out 3; }
+.is-current .wave .wv:nth-child(2) { animation-delay: .15s; }
+.is-current .wave .wv:nth-child(3) { animation-delay: .3s; }
+.is-current .wave .wv:nth-child(4) { animation-delay: .45s; }
+details.sources { border-top: 1px solid var(--line); padding-top: 0.75rem; }
+details.sources summary { cursor: pointer; font: 400 0.8125rem/1.4 var(--font-pixel); color: var(--muted); }
+details.sources ul { margin-top: 0.625rem; display: grid; gap: 0.375rem; font: 400 0.8125rem/1.5 var(--font-mono); color: var(--muted); }
+details.sources a { color: var(--cyan-text); }
+
+/* =====================================================================
+   Walk-through layout: a scrolling reading page, not full-screen slides.
+   ===================================================================== */
+a { color: var(--cyan-text); text-underline-offset: 3px; }
+a:hover { color: var(--fg); }
+h1 { font-size: clamp(2.75rem, 9vw, 5rem); }
+h2 { font-size: clamp(1.9rem, 5vw, 3.1rem); }
+h2[tabindex="-1"]:focus:not(:focus-visible), h1[tabindex="-1"]:focus:not(:focus-visible) { outline: none; }
+
+/* sticky "where you are" bar */
+.topbar { position: sticky; top: 0; z-index: 30; background: var(--bg); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
+.progress { display: flex; gap: 3px; }
+.progress a { flex: 1; height: 0.4375rem; background: var(--inset); }
+.progress a.past { background: var(--line); }
+.progress a.now { background: var(--red); }
+.progress a:hover { background: var(--cyan); }
+.where { display: flex; align-items: center; gap: 0.625rem; max-width: 64rem; margin-inline: auto; padding: 0.4375rem clamp(1rem, 4vw, 2.5rem) 0.375rem; font: 400 0.75rem/1.2 var(--font-pixel); color: var(--muted); min-width: 0; }
+.where .num { font-size: 0.75rem; color: var(--red); flex: 0 0 auto; }
+.where .wt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* page frame */
+.wrap { width: 100%; max-width: 64rem; margin-inline: auto; padding-inline: clamp(1rem, 4vw, 2.5rem); min-width: 0; }
+.stack { display: grid; gap: clamp(1rem, 2.4vw, 1.5rem); min-width: 0; align-content: start; }
+.part { padding-block: clamp(2.75rem, 7vw, 4.5rem); border-bottom: 1px dashed var(--line); overflow-x: hidden; overflow-x: clip; }
+
+/* reading sizes: body text stays between 17 and 19px */
+.body { font-size: 1.125rem; line-height: 1.6; }
+.who .what, .tile p, .note, .rail p, .face.back p, .why, .src-card .src-text, .src-card .src-rule,
+.fact, .step3 p, .two .card p, .move-card p, .detail .move, .sp p, .exit, .face.front, .prompt, .receipt li { font-size: 1.0625rem; }
+.vs div { font-size: 0.9375rem; }
+.res-row p { font-size: clamp(1.0625rem, 1.35vw, 1.2rem); }
+.summary-note { font-size: 0.9375rem; }
+.progress a:focus-visible { outline-offset: -2px; background: var(--cyan); }
+.fact { grid-template-columns: 3rem minmax(0, 1fr); }
+
+/* opening */
+.intro { padding-block: clamp(2rem, 6vw, 3.5rem) clamp(2rem, 5vw, 3rem); }
+.intro-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+@media (max-width: 760px) { .intro-grid { grid-template-columns: minmax(0, 1fr); } }
+.how { color: var(--muted); max-width: 52ch; font-size: 1.0625rem; }
+.stickers { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1.25rem 1rem; }
+.stickers li { display: grid; justify-items: center; gap: 0.75rem; }
+.stk { display: block; }
+.stk img { width: 100%; }
+.sticker.stk-clawd { width: 4rem; padding: 0.75rem 0.5rem 0.5rem; background: var(--inset); box-shadow: 0.3125rem 0.3125rem 0 var(--clawd); }
+.sticker.stk-codex { width: 3.5rem; box-shadow: 0.3125rem 0.3125rem 0 var(--codex); }
+.sticker.stk-codex img { aspect-ratio: 280 / 350; object-fit: cover; }
+.sticker.stk-jolly { width: 3.5rem; background: var(--paper); box-shadow: 0.3125rem 0.3125rem 0 var(--yellow); }
+.sticker.stk-jolly img { aspect-ratio: 330 / 430; object-fit: contain; }
+.sticker.stk-dots { width: 6.5rem; box-shadow: 0.3125rem 0.3125rem 0 var(--green); }
+.sticker.stk-dots img { aspect-ratio: 638 / 300; object-fit: cover; }
+@media (min-width: 761px) {
+  .stickers { justify-content: center; gap: 1.5rem 1.25rem; }
+  .sticker.stk-clawd { width: 5.25rem; }
+  .sticker.stk-codex, .sticker.stk-jolly { width: 4.5rem; }
+  .sticker.stk-dots { width: 8.5rem; }
+}
+.stickers li:nth-child(2) .stk { animation-delay: -.6s; }
+.stickers li:nth-child(3) .stk { animation-delay: -1.2s; }
+.stickers li:nth-child(4) .stk { animation-delay: -1.8s; }
+
+.toc { margin-top: clamp(1.5rem, 4vw, 2.25rem); border: 1px solid var(--line); background: var(--card); }
+.toc summary { cursor: pointer; padding: 0.875rem 1rem; font: 400 0.8125rem/1.3 var(--font-pixel); }
+.toc ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.5rem; padding: 0 1rem 1rem; }
+@media (max-width: 640px) { .toc ol { grid-template-columns: minmax(0, 1fr); } }
+.toc a { display: flex; gap: 0.75rem; align-items: baseline; padding: 0.375rem 0; color: var(--fg); text-decoration: none; font-size: 1.0625rem; }
+.toc a:hover .tt { color: var(--cyan-text); text-decoration: underline; }
+.toc .num { color: var(--muted); font-size: 0.75rem; min-width: 2rem; flex: 0 0 auto; }
+
+/* faces: side-by-side cards on a phone */
+@media (max-width: 460px) {
+  .who figure { grid-template-columns: 6.5rem minmax(0, 1fr); grid-template-rows: auto; }
+  .who .shot { aspect-ratio: auto; height: 100%; min-height: 6.5rem; border-bottom: 0; border-right: 2px solid var(--fg); }
+}
+@media (max-width: 860px) {
+  .jolly-stage .sticker { width: min(60%, 13rem); }
+  .pet-stage .sticker { width: min(55%, 13rem); }
+}
+
+/* study results on a phone */
+@media (max-width: 560px) {
+  .res-head, .res-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.75rem; }
+  .res-head span:first-child { display: none; }
+  .res-row p { grid-column: 1 / -1; }
+}
+
+a.demo { text-decoration: none; display: inline-block; }
+a.demo:hover { color: var(--on-accent); filter: brightness(1.08); }
+.open-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; }
+.open-note { font-size: 1.0625rem; color: var(--muted); }
+
+.pet-hint { font: 400 0.875rem/1.45 var(--font-pixel); color: var(--yellow); text-align: center; max-width: 30ch; min-height: 2.9em; }
+
+/* study cycle: all five stages show without JS */
+.cycle-all { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 760px) { .cycle-all { grid-template-columns: minmax(0, 1fr); } }
+.cycle-all .detail { min-height: 0; }
+
+/* flip cards: two columns read better on a page */
+.flips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 600px) { .flips { grid-template-columns: minmax(0, 1fr); } }
+html:not(.js) .flip { cursor: default; }
+html:not(.js) .flip-inner { transform: none !important; }
+html:not(.js) .face { grid-area: auto; backface-visibility: visible; -webkit-backface-visibility: visible; }
+html:not(.js) .face.back { transform: none; border-top: 0; }
+html:not(.js) .face.front .tap { display: none; }
+.js .nojs { display: none; }
+
+/* five rules: three across on a page */
+.rails { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 860px) { .rails { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .rails { grid-template-columns: minmax(0, 1fr); } }
+
+/* your move */
+.closing { font: 700 clamp(1.5rem, 3.2vw, 2.25rem)/1.2 var(--font-sans); letter-spacing: -.02em; max-width: 24ch; }
+@media (max-width: 560px) {
+  .wave { gap: 0.75rem; }
+  .wave .wv { width: 4rem; }
+  .wave .wv.wide { width: 7rem; }
+}
+
+/* check yourself */
+.check-part { border-bottom-style: solid; }
+.check { display: grid; gap: 1.25rem; padding: clamp(1.125rem, 3vw, 1.75rem); background: var(--card); border: 2px dashed var(--green); }
+.check-head { display: grid; gap: 0.625rem; }
+.check-h { font-size: clamp(1.4rem, 3vw, 1.9rem); line-height: 1.15; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.875rem; }
+.check-h .badge { font-size: 0.6875rem; letter-spacing: .06em; }
+.check-head p { color: var(--muted); font-size: 1.0625rem; }
+.q { display: grid; gap: 0.75rem; padding-top: 1.125rem; border-top: 1px solid var(--line); }
+.q-label { display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); gap: 0.5rem; font-weight: 600; font-size: 1.125rem; line-height: 1.45; }
+.q-num { font: 400 0.875rem/1.85 var(--font-pixel); color: var(--green); }
+.q textarea { width: 100%; min-height: 5rem; resize: vertical; padding: 0.75rem 0.875rem; background: var(--inset); color: var(--fg); border: 1px solid var(--line); border-left: 4px solid var(--cyan); font: 400 1.0625rem/1.5 var(--font-sans); }
+.q textarea::placeholder { color: var(--muted); }
+.ans > summary { display: inline-block; list-style: none; }
+.ans > summary::-webkit-details-marker { display: none; }
+.ans > summary::marker { content: ""; }
+.ans[open] .show, .ans:not([open]) .hide { display: none; }
+.ans-body { margin-top: 0.875rem; padding: 0.875rem 1rem; background: var(--inset); border-left: 4px solid var(--green); display: grid; gap: 0.5rem; font-size: 1.0625rem; line-height: 1.55; }
+.ans-body ol { display: grid; gap: 0.375rem; }
+.check-foot { font: 400 0.875rem/1.45 var(--font-pixel); color: var(--yellow); }
+
+/* optional sprint */
+.sprint-part { background: linear-gradient(var(--yellow-soft), transparent 18rem); }
+
+.foot { border-bottom: 0; padding-block: 2rem 3rem; }
+.foot .small { margin-top: 0.75rem; }
+
+@media (max-width: 640px) {
+  body { font-size: 1.0625rem; }
+  .body { font-size: 1.0625rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+.tut-link { max-width: 75rem; margin: 1.5rem auto 0; font: 500 1rem/1.5 var(--font-mono); color: var(--muted); }
+.tut-link a { color: var(--cyan-text); }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <nav class="progress" id="progress" aria-label="Sections">
+    <a href="#s1" aria-label="Part 1: AI got a face"></a>
+    <a href="#s2" aria-label="Part 2: Cute is a design decision"></a>
+    <a href="#s3" aria-label="Part 3: Your course is the source"></a>
+    <a href="#s4" aria-label="Part 4: Meet Gemini Notebook"></a>
+    <a href="#s5" aria-label="Part 5: Same tool, opposite results"></a>
+    <a href="#s6" aria-label="Part 6: How learning actually works"></a>
+    <a href="#s7" aria-label="Part 7: Brain first, bot second"></a>
+    <a href="#s8" aria-label="Part 8: Gemini Notebook on the Study Cycle"></a>
+    <a href="#s9" aria-label="Part 9: Does the prompt think with you or for you?"></a>
+    <a href="#s10" aria-label="Part 10: Check the receipts"></a>
+    <a href="#s11" aria-label="Part 11: Five rules"></a>
+    <a href="#s12" aria-label="Part 12: Across your term"></a>
+    <a href="#s13" aria-label="Part 13: Your move"></a>
+    <a href="#sprint" aria-label="Optional: the 20-minute Notebook Sprint"></a>
+  </nav>
+  <p class="where" aria-hidden="true"><span class="num" id="whereNum">Start</span><span class="wt" id="whereTitle">Brain first, bot second</span></p>
+</header>
+
+<main id="top">
+
+<!-- Opening -->
+<section class="part intro" id="start" aria-labelledby="h-start">
+  <div class="wrap">
+    <div class="intro-grid">
+      <div class="stack">
+        <div class="meta"><span class="badge b-cyan">Study smarter</span><span>For any course</span></div>
+        <h1 id="h-start">Brain first,<br><span class="hl hl-red">bot second.</span></h1>
+        <p class="lede">How to use Gemini Notebook so it helps you learn, instead of letting you skip the learning.</p>
+        <p class="how">Thirteen short parts, at your own pace. Every few parts, you stop and check yourself from memory, because retrieval beats rereading.</p>
+        <p class="byline">From a talk by Travis Masingale · Design, EWU</p>
+      </div>
+      <ul class="stickers" role="list" aria-label="The four AI mascots in this walk-through">
+        <li><span class="sticker stk stk-clawd bob" style="--tilt:-3deg"><svg class="clawd-svg" viewBox="0 0 18 10" shape-rendering="crispEdges" aria-hidden="true"><path class="c-fill" d="M3 0h12v2H3zM3 2h2v2H3zM6 2h6v2H6zM13 2h2v2h-2zM1 4h16v2H1zM3 6h12v2H3z"/><path class="c-eyes" d="M5 2h1v2H5zM12 2h1v2h-1z"/><path class="c-fill c-legs-a" d="M4 8h1v2H4zM11 8h1v2h-1z"/><path class="c-fill c-legs-b" d="M6 8h1v2H6zM13 8h1v2h-1z"/></svg></span><span class="m-name">Clawd</span></li>
+        <li><span class="sticker stk stk-codex bob" style="--tilt:2deg"><img src="../img/codex-pet.png" alt=""></span><span class="m-name">Codex pet</span></li>
+        <li><span class="sticker stk stk-jolly bob" style="--tilt:-2deg"><img src="../img/jolly.jpg" alt=""></span><span class="m-name">Jolly</span></li>
+        <li><span class="sticker stk stk-dots bob" style="--tilt:3deg"><img src="../img/dots.jpg" alt=""></span><span class="m-name">Dots</span></li>
+      </ul>
+    </div>
+    <details class="toc">
+      <summary>Jump to a part</summary>
+      <ol>
+        <li><a href="#s1"><span class="num">01</span><span class="tt">AI got a face</span></a></li>
+        <li><a href="#s2"><span class="num">02</span><span class="tt">Cute is a design decision</span></a></li>
+        <li><a href="#s3"><span class="num">03</span><span class="tt">Your course is the source</span></a></li>
+        <li><a href="#s4"><span class="num">04</span><span class="tt">Meet Gemini Notebook</span></a></li>
+        <li><a href="#s5"><span class="num">05</span><span class="tt">Same tool, opposite results</span></a></li>
+        <li><a href="#s6"><span class="num">06</span><span class="tt">How learning actually works</span></a></li>
+        <li><a href="#s7"><span class="num">07</span><span class="tt">Brain first, bot second</span></a></li>
+        <li><a href="#s8"><span class="num">08</span><span class="tt">Gemini Notebook on the Study Cycle</span></a></li>
+        <li><a href="#s9"><span class="num">09</span><span class="tt">Does the prompt think with you or for you?</span></a></li>
+        <li><a href="#s10"><span class="num">10</span><span class="tt">Check the receipts</span></a></li>
+        <li><a href="#s11"><span class="num">11</span><span class="tt">Five rules</span></a></li>
+        <li><a href="#s12"><span class="num">12</span><span class="tt">Across your term</span></a></li>
+        <li><a href="#s13"><span class="num">13</span><span class="tt">Your move</span></a></li>
+        <li><a href="#sprint"><span class="num">Optional</span><span class="tt">The 20-minute Notebook Sprint</span></a></li>
+      </ol>
+    </details>
+  </div>
+</section>
+
+<!-- 1 · Faces -->
+<section class="part" id="s1" data-title="AI got a face" aria-labelledby="h-s1">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">01/13</span><span class="badge b-yellow">Hook</span></div>
+    <h2 id="h-s1">AI got a <span class="hl hl-yellow">face.</span></h2>
+    <p class="body">Every company decided, at about the same time, that its AI needed a face. Here are four of them.</p>
+    <div class="who">
+      <figure class="sticker sh-yellow" style="--tilt:-2.5deg; box-shadow: 7px 7px 0 var(--clawd)">
+        <div class="shot shot-clawd"><svg class="clawd-svg bob" viewBox="0 0 18 10" shape-rendering="crispEdges" role="img" aria-label="Clawd, a pixel crab"><path class="c-fill" d="M3 0h12v2H3zM3 2h2v2H3zM6 2h6v2H6zM13 2h2v2h-2zM1 4h16v2H1zM3 6h12v2H3z"/><path class="c-eyes" d="M5 2h1v2H5zM12 2h1v2h-1z"/><path class="c-fill c-legs-a" d="M4 8h1v2H4zM11 8h1v2h-1z"/><path class="c-fill c-legs-b" d="M6 8h1v2H6zM13 8h1v2h-1z"/></svg></div>
+        <figcaption><span class="name">Clawd</span><span class="maker">Claude Code · Anthropic</span><span class="what">Greets you every time you open the terminal.</span></figcaption>
+      </figure>
+      <figure class="sticker" style="--tilt:2deg; box-shadow: 7px 7px 0 var(--codex)">
+        <div class="shot"><img src="../img/codex-pet.png" alt="The default Codex pet: a blue cloud-shaped robot with a terminal prompt on its face"></div>
+        <figcaption><span class="name">Codex pet</span><span class="maker">OpenAI · May 2026</span><span class="what">Floats on your desktop and pings you when the AI needs you.</span></figcaption>
+      </figure>
+      <figure class="sticker sh-green" style="--tilt:-1.5deg">
+        <div class="shot shot-dots"><img src="../img/dots.jpg" alt="OpenAI's Dots: fuzzy characters in blue, green, yellow and pink, one in a beret, one in glasses"></div>
+        <figcaption><span class="name">Dots</span><span class="maker">OpenAI · Sept 29, 2026</span><span class="what">Always-on agents, each with a name and a fuzzy face.</span></figcaption>
+      </figure>
+      <figure class="sticker sh-yellow" style="--tilt:2.5deg">
+        <div class="shot shot-jolly"><img src="../img/jolly.jpg" alt="Jolly: a cream, plush, rosy-cheeked character"></div>
+        <figcaption><span class="name">Jolly</span><span class="maker">Meta Muse · Sept 2026</span><span class="what">A plush mascot for Meta's new agent.</span></figcaption>
+      </figure>
+    </div>
+    <div class="ask-row">
+      <p class="ask">Have you met one of these?</p>
+      <p class="small">Images: OpenAI and Meta launch art via press coverage. Clawd redrawn from the Claude Code terminal sprite.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · Cute is a decision -->
+<section class="part" id="s2" data-title="Cute is a design decision" aria-labelledby="h-s2">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">02/13</span><span class="badge b-yellow">Hook</span></div>
+    <div class="cols">
+      <div class="stack">
+        <h2 id="h-s2">Cute is a <span class="hl hl-yellow">design decision.</span></h2>
+        <p class="lede">A friendly face lowers your guard. That's the point.</p>
+        <p class="body">Mascots like these exist to make you trust the AI. That's great for the companies. It can be bad for your learning.</p>
+        <div class="quote">
+          <p>People may treat it “less like software and more like a companion.”</p>
+          <p class="small">Justin Joseph, quoted in <i>Fortune</i>, October 2, 2026</p>
+        </div>
+        <p class="body">When AI feels like a friend, you stop checking it. And a friend will happily do your homework for you.</p>
+        <p class="thinker"><span class="pixel">Q:</span> So who is doing the thinking?</p>
+      </div>
+      <div class="jolly-stage">
+        <p class="bubble">Trust me!</p>
+        <figure class="sticker sh-yellow" style="--tilt:3deg; margin:0"><img src="../img/jolly.jpg" alt="Jolly, Meta's plush mascot"></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Your course is the source -->
+<section class="part" id="s3" data-title="Your course is the source" aria-labelledby="h-s3">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">03/13</span><span class="badge b-cyan">Context</span><span>Any course</span></div>
+    <h2 id="h-s3">Your course is <span class="hl hl-cyan">the source.</span></h2>
+    <p class="body">Every course already hands you sources. Gemini Notebook turns them into a study partner.</p>
+    <div class="cols" style="align-items:start">
+      <div class="stack" style="gap:16px">
+        <div class="src-card">
+          <div class="src-head"><span>Your course materials</span><span>Any discipline</span></div>
+          <div class="src-body">
+            <ul class="chips" role="list" aria-label="Sources your course already gives you">
+              <li class="chip">A reading</li><li class="chip">Lecture slides</li><li class="chip">A lab manual</li><li class="chip">A problem set</li><li class="chip">A case study</li><li class="chip">Your own notes</li>
+            </ul>
+            <p class="src-text">Add them to a notebook. Ask questions and get answers that cite them. Turn them into study guides, flashcards, practice quizzes and mind maps.</p>
+            <p class="src-rule">AI should <span class="hl hl-red">support your learning, not replace it.</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="stack" style="gap:16px">
+        <ul class="facts">
+          <li class="fact"><span class="pixel">GET</span><span>Find your materials wherever your course posts them, for example Canvas.</span></li>
+          <li class="fact"><span class="pixel">ANY</span><span>Photosynthesis, supply and demand, the chain rule. The method is the same.</span></li>
+          <li class="fact"><span class="pixel">RULE</span><span>Check your syllabus for your course's AI rules.</span></li>
+        </ul>
+        <div class="host-row">
+          <span class="clawd-wrap" aria-hidden="true"><svg class="clawd-svg bob" viewBox="0 0 18 10" shape-rendering="crispEdges"><path class="c-fill" d="M3 0h12v2H3zM3 2h2v2H3zM6 2h6v2H6zM13 2h2v2h-2zM1 4h16v2H1zM3 6h12v2H3z"/><path class="c-eyes" d="M5 2h1v2H5zM12 2h1v2h-1z"/><path class="c-fill c-legs-a" d="M4 8h1v2H4zM11 8h1v2h-1z"/><path class="c-fill c-legs-b" d="M6 8h1v2H6zM13 8h1v2h-1z"/></svg></span>
+          <p class="bubble">Great rule. So how do you actually do it?</p>
+        </div>
+      </div>
+    </div>
+    <p class="body">The rest of this walk-through shows you how.</p>
+  </div>
+</section>
+
+<!-- Check yourself 1 -->
+<aside class="part check-part" aria-labelledby="h-c1">
+  <div class="wrap">
+    <div class="check">
+      <div class="check-head">
+        <h2 class="check-h" id="h-c1">Check yourself <span class="badge b-green">1 of 4</span></h2>
+        <p>Answer from memory before you peek. Type it, or say it in your head.</p>
+      </div>
+      <div class="q">
+        <label class="q-label" for="c1q1"><span class="q-num">1</span><span>Why do AI companies give their AI a cute face? What happens when AI feels like a friend?</span></label>
+        <textarea id="c1q1" rows="3" placeholder="Your answer first"></textarea>
+        <details class="ans">
+          <summary class="btn"><span class="show">Show answer</span><span class="hide">Hide answer</span></summary>
+          <div class="ans-body"><p>A friendly face lowers your guard. That's the point. Mascots like these exist to make you trust the AI.</p><p>When AI feels like a friend, you stop checking it.</p></div>
+        </details>
+      </div>
+      <div class="q">
+        <label class="q-label" for="c1q2"><span class="q-num">2</span><span>What one rule should guide how you use AI to study? Where do you find your course's own AI rules?</span></label>
+        <textarea id="c1q2" rows="3" placeholder="Your answer first"></textarea>
+        <details class="ans">
+          <summary class="btn"><span class="show">Show answer</span><span class="hide">Hide answer</span></summary>
+          <div class="ans-body"><p>AI should support your learning, not replace it.</p><p>Check your syllabus for your course's AI rules.</p></div>
+        </details>
+      </div>
+      <p class="check-foot">Missed a piece? That's the gap to fix. Wrong answers teach too.</p>
+    </div>
+  </div>
+</aside>
+
+<!-- 4 · Gemini Notebook -->
+<section class="part" id="s4" data-title="Meet Gemini Notebook" aria-labelledby="h-s4">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">04/13</span><span class="badge b-green">Learn</span></div>
+    <div class="rename"><h2 id="h-s4">Meet <span class="hl hl-green">Gemini Notebook.</span></h2></div>
+    <div class="rename"><s>NotebookLM</s><span class="stamp">Renamed July 16, 2026</span></div>
+    <p class="body">If you've heard of NotebookLM, this is the same tool with a new name. Here's what makes it different from a regular chatbot. You hand it sources, like a reading or slides from your course, and it answers from those sources.</p>
+    <div class="tiles">
+      <div class="card card-top-green tile"><span class="big">Grounded</span><p>It answers from the sources you add.</p></div>
+      <div class="card card-top-cyan tile"><span class="big" style="font-family:var(--font-sans)">[1] [2]</span><p>Ask in the <b>chat</b> box. Each answer ends with numbered citations. Click one to jump to the exact sentence in your source.</p></div>
+      <div class="card card-top-yellow tile"><span class="big">PDF + notes</span><p>Upload a reading or slides from your course. Add your own notes too.</p></div>
+    </div>
+    <p class="body">The <b>Studio</b> panel makes these. They don't show citations, so check them in the chat:</p>
+    <ul class="chips" role="list" aria-label="Studio outputs">
+      <li class="chip">Audio overview</li><li class="chip">Video overview</li><li class="chip">Mind map</li><li class="chip">Study guide</li><li class="chip">Flashcards</li><li class="chip">Quiz</li><li class="chip">Infographic</li><li class="chip">Slide deck</li>
+    </ul>
+    <p class="body">Citations appear at the end of answers in the notebook's <b>chat</b>. Studio outputs such as flashcards and quizzes do not show them. To check one, ask in the chat: “Where in my sources does this come from?”</p>
+    <div class="notes-row">
+      <p class="note"><span class="pixel">Sign in</span><span>Use your <b>@ewu.edu</b> account. It carries data protections a personal account doesn't.</span></p>
+      <p class="note"><span class="pixel">Upload</span><span>Upload only materials you have the right to use: your own notes, materials your instructor provides, open textbooks. If you're unsure, ask your instructor. Never upload other people's work or personal information.</span></p>
+    </div>
+    <p class="open-row"><a class="demo" href="https://notebook.google.com/" target="_blank" rel="noopener">Open Gemini Notebook ›</a><span class="open-note">Sign in with your @ewu.edu account. Ask the chat a question, then click the [1].</span></p>
+  </div>
+</section>
+
+<!-- 5 · Evidence -->
+<section class="part" id="s5" data-title="Same tool, opposite results" aria-labelledby="h-s5">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">05/13</span><span class="badge b-red">Evidence</span></div>
+    <h2 id="h-s5">Same tool. <span class="hl hl-red">Opposite results.</span></h2>
+    <p class="body">Two studies looked at students learning with AI. Same technology. Opposite results.</p>
+    <div class="studies">
+      <div class="card card-top-red study">
+        <span class="label">Study A · about 1,000 high school students practicing math</span>
+        <div class="res">
+          <div class="res-head"><span></span><span>Practicing with AI</span><span>On the test, no AI</span></div>
+          <div class="res-row"><p>Used a regular AI chatbot (like ChatGPT) to get answers</p><span class="res-num good">48%<small>better</small></span><span class="res-num bad">17%<small>worse</small></span></div>
+          <div class="res-row"><p>Used an AI tutor that gave hints, not answers</p><span class="res-num good">127%<small>better</small></span><span class="res-num gold">No drop<small>held steady</small></span></div>
+        </div>
+        <p class="cite">Compared with students who never used AI. Bastani et al., <i>PNAS</i>, 2025.</p>
+      </div>
+      <div class="card card-top-yellow study">
+        <span class="label">Study B · 194 Harvard physics students</span>
+        <p class="twice-big">2×</p>
+        <p class="body">They learned <b>more than twice as much</b> with an AI tutor that made them do the thinking, in less time than a regular class.</p>
+        <p class="cite">Kestin et al., <i>Scientific Reports</i>, 2025.</p>
+      </div>
+    </div>
+    <p class="body">The chatbot group in Study A let the bot do the thinking. Once the AI was gone, they did worse than students who never used it.</p>
+    <div class="decides">
+      <img class="mini-pet" src="../img/codex-pet.png" alt="">
+      <p class="line">The tool doesn't decide. <span class="hl hl-green">How you use it decides.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · How learning works -->
+<section class="part" id="s6" data-title="How learning actually works" aria-labelledby="h-s6">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">06/13</span><span class="badge b-green">Learn</span><span>Saundra McGuire's Study Cycle</span></div>
+    <h2 id="h-s6">How learning <span class="hl hl-green">actually works.</span></h2>
+    <p class="body">Saundra McGuire's Study Cycle has five steps.</p>
+    <div class="cycle-strip">
+      <span class="step">Preview</span><span class="arr" aria-hidden="true">→</span><span class="step">Attend</span><span class="arr" aria-hidden="true">→</span><span class="step">Review</span><span class="arr" aria-hidden="true">→</span><span class="step">Study</span><span class="arr" aria-hidden="true">→</span><span class="step">Assess</span><span class="loop">↺ repeat</span>
+    </div>
+    <p class="body">Two ideas sit underneath it.</p>
+    <div class="two">
+      <div class="card card-top-green">
+        <h3>Retrieval beats rereading.</h3>
+        <p>Pulling an idea out of your own head is what makes it stick, even when you get it wrong.</p>
+        <div class="vs"><div class="no">Reread the notes</div><div class="yes">Quiz yourself</div></div>
+      </div>
+      <div class="card card-top-red">
+        <h3>The fluency trap.</h3>
+        <p>A smooth summary <i>feels</i> like knowing. An AI summary is the smoothest text you will ever read.</p>
+        <div class="vs"><div class="no">“I read the summary, I've got it.”</div><div class="yes">“I haven't tested myself yet.”</div></div>
+      </div>
+    </div>
+    <div class="host-row">
+      <span class="clawd-wrap" aria-hidden="true"><svg class="clawd-svg bob" viewBox="0 0 18 10" shape-rendering="crispEdges"><path class="c-fill" d="M3 0h12v2H3zM3 2h2v2H3zM6 2h6v2H6zM13 2h2v2h-2zM1 4h16v2H1zM3 6h12v2H3z"/><path class="c-eyes" d="M5 2h1v2H5zM12 2h1v2h-1z"/><path class="c-fill c-legs-a" d="M4 8h1v2H4zM11 8h1v2h-1z"/><path class="c-fill c-legs-b" d="M6 8h1v2H6zM13 8h1v2h-1z"/></svg></span>
+      <p class="bubble">Rereading feels great. That's the trap.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Check yourself 2 -->
+<aside class="part check-part" aria-labelledby="h-c2">
+  <div class="wrap">
+    <div class="check">
+      <div class="check-head">
+        <h2 class="check-h" id="h-c2">Check yourself <span class="badge b-green">2 of 4</span></h2>
+        <p>Answer from memory before you peek. Type it, or say it in your head.</p>
+      </div>
+      <div class="q">
+        <label class="q-label" for="c2q1"><span class="q-num">1</span><span>In Study A, some students used a regular AI chatbot to get answers. How did they do while practicing? How did they do on the test, with no AI?</span></label>
+        <textarea id="c2q1" rows="3" placeholder="Your answer first"></textarea>
+        <details class="ans">
+          <summary class="btn"><span class="show">Show answer</span><span class="hide">Hide answer</span></summary>
+          <div class="ans-body"><p>48% better while practicing. 17% worse on the test with no AI, compared with students who never used AI.</p><p>Students with an AI tutor that gave hints, not answers, did 127% better while practicing, with no drop on the test.</p></div>
+        </details>
+      </div>
+      <div class="q">
+        <label class="q-label" for="c2q2"><span class="q-num">2</span><span>Which works better: rereading your notes or quizzing yourself? Why?</span></label>
+        <textarea id="c2q2" rows="3" placeholder="Your answer first"></textarea>
+        <details class="ans">
+          <summary class="btn"><span class="show">Show answer</span><span class="hide">Hide answer</span></summary>
+          <div class="ans-body"><p>Quizzing yourself. Retrieval beats rereading. Pulling an idea out of your own head is what makes it stick, even when you get it wrong.</p></div>
+        </details>
+      </div>
+      <p class="check-foot">Missed a piece? That's the gap to fix. Wrong answers teach too.</p>
+    </div>
+  </div>
+</aside>
+
+<!-- 7 · Brain first -->
+<section class="part" id="s7" data-title="Brain first, bot second" aria-labelledby="h-s7">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">07/13</span><span class="badge b-red">Apply</span><span>Your new rule</span></div>
+    <div class="cols">
+      <div class="stack" style="gap:18px">
+        <h2 id="h-s7">Brain first, <span class="hl hl-red">bot second.</span></h2>
+        <p class="body">This is the one rule to leave with. Generate, then check, then fix.</p>
+        <ol class="steps3">
+          <li class="step3 st-red"><span class="n">1</span><div><h3>Generate.</h3><p>Write what you remember. Try the question first.</p></div></li>
+          <li class="step3 st-cyan"><span class="n">2</span><div><h3>Check.</h3><p>Ask the notebook. Click the citation.</p></div></li>
+          <li class="step3 st-green"><span class="n">3</span><div><h3>Fix.</h3><p>Name the gap in your own words.</p></div></li>
+        </ol>
+        <p class="body">The Codex pet helps explain it. Its status bubble has four states: Running, Needs input, Ready and Blocked. For learning, the state you want is Needs input. The AI should spend most of its time waiting for you to think. If the bot never waits, you never think.</p>
+      </div>
+      <div class="pet-stage">
+        <p class="status" id="petStatus" data-s="input"><span class="dot"></span><span class="txt">Needs input</span></p>
+        <figure class="sticker" style="--tilt:-2deg; margin:0"><img src="../img/codex-pet.png" alt="The default Codex pet"></figure>
+        <div class="states" id="petStates" role="group" aria-label="Codex pet status states" hidden>
+          <button type="button" id="st-run" data-s="run" aria-pressed="false">Running</button>
+          <button type="button" id="st-input" data-s="input" aria-pressed="true">Needs input</button>
+          <button type="button" id="st-ready" data-s="ready" aria-pressed="false">Ready</button>
+          <button type="button" id="st-blocked" data-s="blocked" aria-pressed="false">Blocked</button>
+        </div>
+        <p class="pet-hint" id="petHint" aria-live="polite">Needs input: your turn to think. This is the state you want.</p>
+        <p class="pet-caption">The best AI moment is when it waits for you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Study Cycle map -->
+<section class="part" id="s8" data-title="Gemini Notebook on the Study Cycle" aria-labelledby="h-s8">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">08/13</span><span class="badge b-red">Apply</span><span>Tap each stage</span></div>
+    <h2 id="h-s8">Gemini Notebook on <span class="hl hl-green">the Study Cycle.</span></h2>
+    <p class="body">Each stage of the Study Cycle gets one notebook move and one prompt to try.</p>
+    <div class="cycle-wrap" id="cycleWrap" hidden>
+      <div class="ring" role="tablist" aria-label="Study Cycle stages">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="track" cx="50" cy="50" r="40"/></svg>
+        <div class="center" aria-hidden="true"><b>Study<br>Cycle</b><span>McGuire</span></div>
+        <button class="node" role="tab" type="button" id="tab-preview" aria-controls="cycleDetail" aria-selected="true" data-k="preview">Preview</button>
+        <button class="node" role="tab" type="button" id="tab-attend" aria-controls="cycleDetail" aria-selected="false" data-k="attend">Attend</button>
+        <button class="node" role="tab" type="button" id="tab-review" aria-controls="cycleDetail" aria-selected="false" data-k="review">Review</button>
+        <button class="node" role="tab" type="button" id="tab-study" aria-controls="cycleDetail" aria-selected="false" data-k="study">Study</button>
+        <button class="node" role="tab" type="button" id="tab-assess" aria-controls="cycleDetail" aria-selected="false" data-k="assess">Assess</button>
+      </div>
+      <div class="detail card card-top-green" id="cycleDetail" role="tabpanel" aria-labelledby="tab-preview">
+        <span class="k" id="cdStep">Stage 1 of 5</span>
+        <h3 id="cdTitle">Preview</h3>
+        <p class="move" id="cdMove">Play the audio overview on the walk to class. Skim the mind map.</p>
+        <p class="prompt" id="cdPrompt">Make a mind map of [this reading].</p>
+        <p class="why" id="cdWhy">A trailer gives new ideas somewhere to land. It starts the cycle. It never replaces the reading.</p>
+      </div>
+    </div>
+    <ol class="cycle-all" id="cycleAll">
+      <li class="detail card card-top-green"><span class="k">Stage 1 of 5</span><h3>Preview</h3><p class="move">Play the audio overview on the walk to class. Skim the mind map.</p><p class="prompt">Make a mind map of [this reading].</p><p class="why">A trailer gives new ideas somewhere to land. It starts the cycle. It never replaces the reading.</p></li>
+      <li class="detail card card-top-green"><span class="k">Stage 2 of 5</span><h3>Attend</h3><p class="move">Bring one question the notebook couldn’t answer.</p><p class="prompt">List three questions [this reading] raises but doesn’t answer.</p><p class="why">You arrive with a reason to listen and something to ask.</p></li>
+      <li class="detail card card-top-green"><span class="k">Stage 3 of 5</span><h3>Review</h3><p class="move">Right after class, quiz yourself on that day’s topic.</p><p class="prompt">Quiz me on [topic], one question at a time. Wait for my answer before the next question.</p><p class="why">McGuire’s cycle puts review as soon after class as possible. Retrieval does the work.</p></li>
+      <li class="detail card card-top-green"><span class="k">Stage 4 of 5</span><h3>Study</h3><p class="move">Flashcards first. Then explain a concept in your own words and ask what’s missing.</p><p class="prompt">Here’s my explanation of [key idea]: [paste]. What did I miss? Cite my sources.</p><p class="why">Explaining it yourself shows you what you actually know.</p></li>
+      <li class="detail card card-top-green"><span class="k">Stage 5 of 5</span><h3>Assess</h3><p class="move">Take a practice quiz closed-book, then check citations on the ones you missed.</p><p class="prompt">Make a 10-question quiz on [this unit]. After I finish, show which sources my misses came from.</p><p class="why">Knowing what you know, and what you don’t, is metacognition.</p></li>
+    </ol>
+    <p class="summary-note">Summaries live at the start of the cycle. Never at the end.</p>
+  </div>
+</section>
+
+<!-- 9 · Prompts -->
+<section class="part" id="s9" data-title="Does the prompt think with you or for you?" aria-labelledby="h-s9">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">09/13</span><span class="badge b-yellow">Workshop</span><span>With or for?</span></div>
+    <h2 id="h-s9">Does the prompt think <span class="hl hl-green">with</span> you or <span class="hl hl-red">for</span> you?</h2>
+    <p class="body">You don't need to be a prompt expert. You need a few good sentences. Read each prompt and decide: with you, or for you? Then tap the card to check.</p>
+    <div class="flips" id="flips">
+      <button class="flip v-with" type="button" id="flip1" aria-pressed="false"><span class="flip-inner"><span class="face front"><span>“Quiz me on [topic], one question at a time. Wait for my answer before the next question.”</span><span class="tap">Tap to reveal</span></span><span class="face back"><span class="verdict">With you</span><p>Retrieval, and the bot waits for you.</p></span></span></button>
+      <button class="flip v-for" type="button" id="flip2" aria-pressed="false"><span class="flip-inner"><span class="face front"><span>“Summarize [this reading] so I don't have to read it.”</span><span class="tap">Tap to reveal</span></span><span class="face back"><span class="verdict">For you</span><p>The fluency trap, ordered to go.</p></span></span></button>
+      <button class="flip v-with" type="button" id="flip3" aria-pressed="false"><span class="flip-inner"><span class="face front"><span>“Here's my explanation of [key idea]: [paste]. What did I miss? Cite my sources.”</span><span class="tap">Tap to reveal</span></span><span class="face back"><span class="verdict">With you</span><p>You generate first. The AI critiques, with receipts.</p></span></span></button>
+      <button class="flip v-mid" type="button" id="flip4" aria-pressed="false"><span class="flip-inner"><span class="face front"><span>“Make me flashcards for [this unit].”</span><span class="tap">Tap to reveal</span></span><span class="face back"><span class="verdict">Depends</span><p>Great if you quiz yourself. Useless if you only read them.</p></span></span></button>
+      <button class="flip v-for" type="button" id="flip5" aria-pressed="false"><span class="flip-inner"><span class="face front"><span>“Write my reflection for me.”</span><span class="tap">Tap to reveal</span></span><span class="face back"><span class="verdict">For you</span><p>The reflection is the assignment.</p></span></span></button>
+      <button class="flip v-with" type="button" id="flip6" aria-pressed="false"><span class="flip-inner"><span class="face front"><span>“Ask me three questions that connect [topic] to my major or my life.”</span><span class="tap">Tap to reveal</span></span><span class="face back"><span class="verdict">With you</span><p>Ties new ideas to something you care about.</p></span></span></button>
+      <button class="flip v-mid" type="button" id="flip7" aria-pressed="false"><span class="flip-inner"><span class="face front"><span>“Which idea in [this unit] do students usually misunderstand?”</span><span class="tap">Tap to reveal</span></span><span class="face back"><span class="verdict">Depends</span><p>Useful as a pointer. You still have to test it.</p></span></span></button>
+      <button class="flip v-for" type="button" id="flip8" aria-pressed="false"><span class="flip-inner"><span class="face front"><span>“Give me the answers to the homework.”</span><span class="tap">Tap to reveal</span></span><span class="face back"><span class="verdict">For you</span><p>No retrieval, no feedback loop, no learning.</p></span></span></button>
+    </div>
+    <div class="flip-tools">
+      <button class="btn btn-primary" type="button" id="revealAll" hidden>Reveal all</button>
+      <button class="btn" type="button" id="resetFlips" hidden>Reset</button>
+      <p class="legend"><span><i class="key-dot" style="background:var(--green)"></i>With you</span><span><i class="key-dot" style="background:var(--red)"></i>For you</span><span><i class="key-dot" style="background:var(--yellow)"></i>Depends on how you use it</span></p>
+    </div>
+    <p class="body">“With you” prompts put you to work: the notebook asks, waits and critiques. “For you” prompts hand the work to the bot. The strongest move: write your own explanation first, then ask what you missed, with a citation.</p>
+  </div>
+</section>
+
+<!-- Check yourself 3 -->
+<aside class="part check-part" aria-labelledby="h-c3">
+  <div class="wrap">
+    <div class="check">
+      <div class="check-head">
+        <h2 class="check-h" id="h-c3">Check yourself <span class="badge b-green">3 of 4</span></h2>
+        <p>Answer from memory before you peek. Type it, or say it in your head.</p>
+      </div>
+      <div class="q">
+        <label class="q-label" for="c3q1"><span class="q-num">1</span><span>Name the three steps of brain first, bot second, in order. What does each one ask you to do?</span></label>
+        <textarea id="c3q1" rows="3" placeholder="Your answer first"></textarea>
+        <details class="ans">
+          <summary class="btn"><span class="show">Show answer</span><span class="hide">Hide answer</span></summary>
+          <div class="ans-body"><ol><li><b>1. Generate.</b> Write what you remember. Try the question first.</li><li><b>2. Check.</b> Ask the notebook. Click the citation.</li><li><b>3. Fix.</b> Name the gap in your own words.</li></ol></div>
+        </details>
+      </div>
+      <div class="q">
+        <label class="q-label" for="c3q2"><span class="q-num">2</span><span>Where do summaries belong in the Study Cycle? And does “Summarize [this reading] so I don't have to read it” think with you or for you?</span></label>
+        <textarea id="c3q2" rows="3" placeholder="Your answer first"></textarea>
+        <details class="ans">
+          <summary class="btn"><span class="show">Show answer</span><span class="hide">Hide answer</span></summary>
+          <div class="ans-body"><p>Summaries live at the start of the cycle, in Preview. Never at the end.</p><p>That prompt thinks for you. It's the fluency trap, ordered to go.</p></div>
+        </details>
+      </div>
+      <p class="check-foot">Missed a piece? That's the gap to fix. Wrong answers teach too.</p>
+    </div>
+  </div>
+</aside>
+
+<!-- 10 · Receipts -->
+<section class="part" id="s10" data-title="Check the receipts" aria-labelledby="h-s10">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">10/13</span><span class="badge b-cyan">Check</span></div>
+    <div class="cols">
+      <div class="check-left">
+        <h2 id="h-s10">Check the <span class="hl hl-cyan">receipts.</span></h2>
+        <p class="lede">Grounded doesn't mean correct.</p>
+        <p class="body"><b>Receipts</b> are the small numbered citations, like <span class="hl hl-cyan">[1]</span>, at the end of answers in the notebook's <b>chat</b>. Click one and it jumps to the exact sentence in your source.</p>
+        <p class="body">Studio outputs such as flashcards and quizzes don't show them. To check one, ask in the chat: “Where in my sources does this come from?”</p>
+        <p class="body">Even with receipts, it can still:</p>
+        <div class="fails"><span>Misreads a passage</span><span>Flattens a nuance</span><span>Skips what class focused on</span></div>
+        <div class="jolly-host">
+          <img src="../img/jolly.jpg" alt="Jolly">
+          <p class="bubble">Cute isn't a citation.</p>
+        </div>
+      </div>
+      <div class="receipt" role="group" aria-label="Receipt check: four moves">
+        <h3>Receipt check</h3>
+        <p class="rc-sub">GEMINI NOTEBOOK · ONE ANSWER</p>
+        <hr>
+        <ul>
+          <li><input type="checkbox" id="rc0"><label for="rc0">Ask in the chat: “Where in my sources does this come from?”</label></li>
+          <li><input type="checkbox" id="rc1"><label for="rc1">Click the [1] after the answer.</label></li>
+          <li><input type="checkbox" id="rc2"><label for="rc2">Read the sentence it points to.</label></li>
+          <li><input type="checkbox" id="rc3"><label for="rc3">Name one thing it got wrong or left out.</label></li>
+        </ul>
+        <hr>
+        <p class="total"><span>Caught the AI's mistake</span><span>WIN</span></p>
+        <p class="thanks">Read it like an editor, not a fan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · Five rules -->
+<section class="part" id="s11" data-title="Five rules" aria-labelledby="h-s11">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">11/13</span><span class="badge b-cyan">Check</span><span>Keep these</span></div>
+    <h2 id="h-s11">Five rules for <span class="hl hl-yellow">using it well.</span></h2>
+    <div class="rails">
+      <div class="card card-top-cyan rail"><span class="ico" style="color:var(--cyan-text)" aria-hidden="true">@</span><h3>Use your @ewu.edu account.</h3><p>Not a personal login.</p></div>
+      <div class="card card-top-red rail"><span class="ico" style="color:var(--red)" aria-hidden="true">×</span><h3>Upload course materials, not people.</h3><p>No classmates' information, health details or grades.</p>
+        <div class="blocked-pet"><img src="../img/codex-pet.png" alt=""><span class="status" data-s="blocked"><span class="dot"></span>Blocked</span></div></div>
+      <div class="card card-top-green rail"><span class="ico" style="color:var(--green)" aria-hidden="true">i</span><h3>Say when you used AI, and how.</h3><p>One line is enough.</p></div>
+      <div class="card card-top-yellow rail"><span class="ico" style="color:var(--yellow)" aria-hidden="true">✎</span><h3>Reflection stays yours.</h3><p>Write reflections in your own words.</p></div>
+      <div class="card rail dashed"><span class="ico" style="color:var(--muted)" aria-hidden="true">?</span><h3>Every course sets its own AI rules.</h3><p>Check the syllabus, and ask before you submit if you're unsure.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · Across your term -->
+<section class="part" id="s12" data-title="Across your term" aria-labelledby="h-s12">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">12/13</span><span class="badge b-green">Plan</span></div>
+    <h2 id="h-s12">Across <span class="hl hl-green">your term.</span></h2>
+    <div class="term">
+      <div class="strip" role="img" aria-label="Your term in four phases: start, early, middle and end">
+        <span class="walker" aria-hidden="true"><svg class="clawd-svg" viewBox="0 0 18 10" shape-rendering="crispEdges"><path class="c-fill" d="M3 0h12v2H3zM3 2h2v2H3zM6 2h6v2H6zM13 2h2v2h-2zM1 4h16v2H1zM3 6h12v2H3z"/><path class="c-eyes" d="M5 2h1v2H5zM12 2h1v2h-1z"/><path class="c-fill c-legs-a" d="M4 8h1v2H4zM11 8h1v2h-1z"/><path class="c-fill c-legs-b" d="M6 8h1v2H6zM13 8h1v2h-1z"/></svg></span>
+        <span class="c-try">Start</span><span class="c-teach">Early</span><span class="c-choose">Middle</span><span class="c-look">End</span>
+      </div>
+      <div class="phases">
+        <div class="phase ph-try"><span class="ph-when">Start of term</span><h3>Try it.</h3><p>Low stakes. One Studio tool a week.</p></div>
+        <div class="phase ph-teach"><span class="ph-when">Early</span><h3>Learn the method.</h3><p>Do the Notebook Sprint once, on purpose.</p></div>
+        <div class="phase ph-choose"><span class="ph-when">Middle</span><h3>You choose.</h3><p>Pick the tool that fits the task, and know why.</p></div>
+        <div class="phase ph-look"><span class="ph-when">End of term</span><h3>Look back.</h3><p>What helped, what didn't, before finals.</p></div>
+      </div>
+    </div>
+    <p class="body">Choosing a tool and knowing why is thinking about your own learning. By the end of the term, you'll have a whole term of your own AI habits to look back on.</p>
+  </div>
+</section>
+
+<!-- Check yourself 4 -->
+<aside class="part check-part" aria-labelledby="h-c4">
+  <div class="wrap">
+    <div class="check">
+      <div class="check-head">
+        <h2 class="check-h" id="h-c4">Check yourself <span class="badge b-green">4 of 4</span></h2>
+        <p>Answer from memory before you peek. Type it, or say it in your head.</p>
+      </div>
+      <div class="q">
+        <label class="q-label" for="c4q1"><span class="q-num">1</span><span>Where do receipts show up in Gemini Notebook? How do you check a flashcard, which has none?</span></label>
+        <textarea id="c4q1" rows="3" placeholder="Your answer first"></textarea>
+        <details class="ans">
+          <summary class="btn"><span class="show">Show answer</span><span class="hide">Hide answer</span></summary>
+          <div class="ans-body"><p>Receipts are the small numbered citations, like [1], at the end of answers in the notebook's chat.</p><p>Studio outputs such as flashcards and quizzes don't show them. To check one, ask in the chat: “Where in my sources does this come from?”</p></div>
+        </details>
+      </div>
+      <div class="q">
+        <label class="q-label" for="c4q2"><span class="q-num">2</span><span>Which account do you sign in with? What should you never upload?</span></label>
+        <textarea id="c4q2" rows="3" placeholder="Your answer first"></textarea>
+        <details class="ans">
+          <summary class="btn"><span class="show">Show answer</span><span class="hide">Hide answer</span></summary>
+          <div class="ans-body"><p>Your @ewu.edu account, not a personal login.</p><p>Upload course materials, not people: no classmates' information, health details or grades.</p></div>
+        </details>
+      </div>
+      <p class="check-foot">Missed a piece? That's the gap to fix. Wrong answers teach too.</p>
+    </div>
+  </div>
+</aside>
+
+<!-- 13 · Your move -->
+<section class="part" id="s13" data-title="Your move" aria-labelledby="h-s13">
+  <div class="wrap stack">
+    <div class="meta"><span class="num">13/13</span><span class="badge b-red">Your move</span></div>
+    <h2 id="h-s13">Your <span class="hl hl-red">move.</span></h2>
+    <div class="moves">
+      <div class="card card-top-cyan move-card"><span class="when" style="color:var(--cyan-text)">Today</span><p>Build a notebook for one course. Try three prompts from this walk-through.</p></div>
+      <div class="card card-top-yellow move-card"><span class="when" style="color:var(--yellow)">This week</span><p>Do the 20-minute Notebook Sprint before your next class. <a href="#sprint">It's right below.</a></p></div>
+      <div class="card card-top-green move-card"><span class="when" style="color:var(--green)">Every week</span><p>Ask yourself: “What did AI help with, and what didn't it?”</p></div>
+    </div>
+    <div class="qa">
+      <p class="closing">The mascots will keep getting cuter. You'll be fine if you keep one habit: <span class="hl hl-red">brain first, bot second.</span></p>
+      <div class="wave" aria-hidden="true">
+        <span class="wv w-clawd"><span class="frame"><svg class="clawd-svg" viewBox="0 0 18 10" shape-rendering="crispEdges"><path class="c-fill" d="M3 0h12v2H3zM3 2h2v2H3zM6 2h6v2H6zM13 2h2v2h-2zM1 4h16v2H1zM3 6h12v2H3z"/><path class="c-eyes" d="M5 2h1v2H5zM12 2h1v2h-1z"/><path class="c-fill c-legs-a" d="M4 8h1v2H4zM11 8h1v2h-1z"/><path class="c-fill c-legs-b" d="M6 8h1v2H6zM13 8h1v2h-1z"/></svg></span></span>
+        <span class="wv w-codex"><img src="../img/codex-pet.png" alt=""></span>
+        <span class="wv w-jolly"><img src="../img/jolly.jpg" alt=""></span>
+        <span class="wv wide w-dots"><img src="../img/dots.jpg" alt=""></span>
+      </div>
+    </div>
+    <p class="body">Questions? Ask your instructor.</p>
+  </div>
+  <p class="tut-link">Want every click spelled out? Follow the step-by-step tutorial: <a href="../tutorial/">Build Your Study Notebook</a></p>
+</section>
+
+<!-- Optional · Sprint -->
+<section class="part sprint-part" id="sprint" data-title="Notebook Sprint" aria-labelledby="h-sprint">
+  <div class="wrap stack">
+    <div class="meta"><span class="badge b-yellow">Optional</span><span>Any course</span></div>
+    <h2 id="h-sprint">Try the 20-minute <span class="hl hl-yellow">Notebook Sprint.</span></h2>
+    <p class="body">Got 20 minutes? Pick one reading, set of slides or unit from any course. Then run the whole method once. Start the timer and follow the five steps. It moves you along and chimes between steps.</p>
+    <ul class="chips" role="list" aria-label="Pick one">
+      <li class="chip">One reading</li><li class="chip">One set of slides</li><li class="chip">One unit</li>
+    </ul>
+    <p class="open-row"><a class="demo" href="https://notebook.google.com/" target="_blank" rel="noopener">Open Gemini Notebook ›</a><span class="open-note">Sign in with your @ewu.edu account.</span></p>
+    <div class="sprint">
+      <div class="stack" style="gap:10px">
+        <ol class="sprint-steps" id="sprintSteps">
+          <li class="sp"><span class="t">0:00</span><p><b>Brain dump · 3 min.</b> Screen down. List three things you remember about your reading, slides or unit, and one question.</p></li>
+          <li class="sp"><span class="t">0:03</span><p><b>Build · 3 min.</b> New notebook. Add your reading, slides or notes.</p></li>
+          <li class="sp"><span class="t">0:06</span><p><b>Quiz · 6 min.</b> Ask in the chat: “Quiz me with 8 questions, one at a time.”</p></li>
+          <li class="sp"><span class="t">0:12</span><p><b>Receipts · 4 min.</b> Pick two answers and click the citations. Does the source really say that?</p></li>
+          <li class="sp"><span class="t">0:16</span><p><b>Compare · 4 min.</b> What did your brain dump miss? What did the notebook miss?</p></li>
+        </ol>
+        <p class="exit"><span class="pixel">Exit line</span>“AI helped me ___. It didn't help with ___.” Write it in your notes.</p>
+      </div>
+      <div class="timer" id="sprintTimer" role="group" aria-label="Sprint timer" hidden>
+        <p class="now" id="tNow" aria-live="polite">Ready when you are</p>
+        <p class="clock" id="tClock">20:00</p>
+        <p class="step-left" id="tStep">5 steps · 20 minutes</p>
+        <div class="segbar" aria-hidden="true">
+          <span class="seg" style="flex:3"><i></i></span><span class="seg" style="flex:3"><i></i></span><span class="seg" style="flex:6"><i></i></span><span class="seg" style="flex:4"><i></i></span><span class="seg" style="flex:4"><i></i></span>
+        </div>
+        <div class="timer-btns">
+          <button class="btn btn-primary" type="button" id="tStart">Start</button>
+          <button class="btn" type="button" id="tNext">Next step</button>
+          <button class="btn" type="button" id="tReset">Reset</button>
+        </div>
+        <label class="sound" for="tSound"><input type="checkbox" id="tSound" checked> Chime between steps</label>
+      </div>
+      <p class="nojs small">No timer here? Use any clock: 3, 3, 6, 4 and 4 minutes.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="part foot">
+  <div class="wrap">
+    <details class="sources">
+      <summary>Sources and image credits</summary>
+      <ul>
+        <li>Google, <a href="https://blog.google/innovation-and-ai/products/gemini-notebook/notebooklm-gemini-notebook/" target="_blank" rel="noopener">“NotebookLM is now Gemini Notebook,”</a> July 16, 2026.</li>
+        <li>Google Workspace Updates, <a href="https://workspaceupdates.googleblog.com/2026/04/students-can-now-create-personal-class-notebooks-with-NotebookLM-in-Google-Classroom.html" target="_blank" rel="noopener">class notebooks with NotebookLM</a>, April 27, 2026.</li>
+        <li>Bastani et al., <a href="https://papers.ssrn.com/abstract=4895486" target="_blank" rel="noopener">“Generative AI without guardrails can harm learning,”</a> <i>PNAS</i> 122(26), 2025.</li>
+        <li>Kestin et al., “AI tutoring outperforms in-class active learning,” <i>Scientific Reports</i>, 2025; <a href="https://news.harvard.edu/gazette/story/2025/10/what-if-ai-could-help-students-learn-not-just-do-assignments-for-them/" target="_blank" rel="noopener">Harvard Gazette summary</a>.</li>
+        <li>Saundra McGuire, <i>Teach Students How to Learn</i> (2015): the Study Cycle.</li>
+        <li><a href="https://fortune.com/2026/10/02/meta-openai-ai-agent-mascots-jolly-dots-trust/" target="_blank" rel="noopener"><i>Fortune</i>, AI agent mascots and trust</a>, Oct 2, 2026.</li>
+        <li>Images: Codex pet via <a href="https://penchan.co/en/ai/coding/codex-pets/" target="_blank" rel="noopener">penchan.co</a>; Dots via <a href="https://designcompass.org/en/2026/09/30/openai-dots-always-on-ai-agents/" target="_blank" rel="noopener">designcompass.org</a>; Jolly via <a href="https://www.avclub.com/jolly-ai-agent-subject-of-sexy-memes-meta" target="_blank" rel="noopener">avclub.com</a>; Clawd redrawn from the Claude Code terminal sprite.</li>
+      </ul>
+    </details>
+    <p class="small">Brain first, bot second · Eastern Washington University</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  document.documentElement.classList.add('js');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pad = n => String(n).padStart(2, '0');
+  const $ = id => document.getElementById(id);
+
+  /* ---------- where you are ---------- */
+  const parts = [...document.querySelectorAll('main .part[data-title]')];
+  const segs = [...document.querySelectorAll('#progress a')];
+  const numbered = parts.filter(p => p.id !== 'sprint').length;
+  const whereNum = $('whereNum'), whereTitle = $('whereTitle');
+  let cur = null;
+  function setCur(i) {
+    if (i === cur) return;
+    cur = i;
+    parts.forEach((p, j) => p.classList.toggle('is-current', j === i));
+    segs.forEach((a, j) => {
+      a.classList.toggle('now', j === i);
+      a.classList.toggle('past', j < i);
+      if (j === i) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+    });
+    if (i < 0) { whereNum.textContent = 'Start'; whereTitle.textContent = 'Brain first, bot second'; }
+    else if (parts[i].id === 'sprint') { whereNum.textContent = 'Optional'; whereTitle.textContent = parts[i].dataset.title; }
+    else { whereNum.textContent = `${pad(i + 1)}/${numbered}`; whereTitle.textContent = parts[i].dataset.title; }
+  }
+  function detect() {
+    const line = window.innerHeight * 0.3;
+    let i = -1;
+    for (let j = 0; j < parts.length; j++) {
+      if (parts[j].getBoundingClientRect().top <= line) i = j; else break;
+    }
+    setCur(i);
+  }
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { detect(); ticking = false; });
+  }, { passive: true });
+  window.addEventListener('resize', detect);
+
+  /* in-page links: scroll here, then move focus to the heading */
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const target = document.getElementById(a.getAttribute('href').slice(1));
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    const h = target.querySelector('h1, h2') || target;
+    if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1');
+    try { h.focus({ preventScroll: true }); } catch (err) { h.focus(); }
+  });
+
+  /* ---------- Codex pet status states ---------- */
+  const petStatus = $('petStatus'), petHint = $('petHint'), petStates = $('petStates');
+  const stateNames = { run: 'Running', input: 'Needs input', ready: 'Ready', blocked: 'Blocked' };
+  const stateHints = {
+    run: 'Running: the bot is doing the work. You are waiting.',
+    input: 'Needs input: your turn to think. This is the state you want.',
+    ready: 'Ready: the bot finished. Did you check it?',
+    blocked: 'Blocked: the bot can\'t go on until someone steps in.'
+  };
+  const stateBtns = [...petStates.querySelectorAll('button')];
+  petStates.hidden = false;
+  stateBtns.forEach(b => {
+    b.addEventListener('click', () => {
+      stateBtns.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      petStatus.dataset.s = b.dataset.s;
+      petStatus.querySelector('.txt').textContent = stateNames[b.dataset.s];
+      petHint.textContent = stateHints[b.dataset.s];
+    });
+  });
+
+  /* ---------- Study Cycle (same text as the deck) ---------- */
+  const cycle = {
+    preview: ['Preview', 'Play the audio overview on the walk to class. Skim the mind map.', 'Make a mind map of [this reading].', 'A trailer gives new ideas somewhere to land. It starts the cycle. It never replaces the reading.'],
+    attend: ['Attend', 'Bring one question the notebook couldn’t answer.', 'List three questions [this reading] raises but doesn’t answer.', 'You arrive with a reason to listen and something to ask.'],
+    review: ['Review', 'Right after class, quiz yourself on that day’s topic.', 'Quiz me on [topic], one question at a time. Wait for my answer before the next question.', 'McGuire’s cycle puts review as soon after class as possible. Retrieval does the work.'],
+    study: ['Study', 'Flashcards first. Then explain a concept in your own words and ask what’s missing.', 'Here’s my explanation of [key idea]: [paste]. What did I miss? Cite my sources.', 'Explaining it yourself shows you what you actually know.'],
+    assess: ['Assess', 'Take a practice quiz closed-book, then check citations on the ones you missed.', 'Make a 10-question quiz on [this unit]. After I finish, show which sources my misses came from.', 'Knowing what you know, and what you don’t, is metacognition.']
+  };
+  const keys = Object.keys(cycle);
+  const nodes = [...document.querySelectorAll('.node')];
+  const detail = $('cycleDetail');
+  $('cycleWrap').hidden = false;
+  $('cycleAll').hidden = true;
+  function pick(k) {
+    const [title, move, tryText, why] = cycle[k];
+    nodes.forEach(n => n.setAttribute('aria-selected', String(n.dataset.k === k)));
+    detail.setAttribute('aria-labelledby', 'tab-' + k);
+    $('cdStep').textContent = `Stage ${keys.indexOf(k) + 1} of 5`;
+    $('cdTitle').textContent = title;
+    $('cdMove').textContent = move;
+    $('cdPrompt').textContent = tryText;
+    $('cdWhy').textContent = why;
+  }
+  nodes.forEach((n, i) => {
+    n.addEventListener('click', () => pick(n.dataset.k));
+    n.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const j = (i + (e.key === 'ArrowRight' ? 1 : -1) + nodes.length) % nodes.length;
+      nodes[j].focus(); pick(nodes[j].dataset.k);
+    });
+  });
+
+  /* ---------- flip cards ---------- */
+  const flips = [...document.querySelectorAll('.flip')];
+  flips.forEach(f => f.addEventListener('click', () => f.setAttribute('aria-pressed', String(f.getAttribute('aria-pressed') !== 'true'))));
+  const revealAll = $('revealAll'), resetFlips = $('resetFlips');
+  revealAll.hidden = false; resetFlips.hidden = false;
+  revealAll.addEventListener('click', () => flips.forEach(f => f.setAttribute('aria-pressed', 'true')));
+  resetFlips.addEventListener('click', () => flips.forEach(f => f.setAttribute('aria-pressed', 'false')));
+
+  /* ---------- sprint timer (keeps time while you work in another tab) ---------- */
+  const plan = [
+    { s: 180, name: 'Brain dump' }, { s: 180, name: 'Build' }, { s: 360, name: 'Quiz' },
+    { s: 240, name: 'Receipts' }, { s: 240, name: 'Compare' }
+  ];
+  const bounds = plan.reduce((a, p) => (a.push((a.length ? a[a.length - 1] : 0) + p.s), a), []);
+  const TOTAL = bounds[bounds.length - 1];
+  const spEls = [...document.querySelectorAll('#sprintSteps .sp')];
+  const segFills = [...document.querySelectorAll('#sprintTimer .seg i')];
+  const tClock = $('tClock'), tNow = $('tNow'), tStep = $('tStep');
+  const tStart = $('tStart'), tSound = $('tSound');
+  $('sprintTimer').hidden = false;
+  let elapsed = 0, running = false, last = 0, iv = 0, lastStep = -1, audio = null;
+  const mmss = s => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
+  function stepAt(t) {
+    const k = bounds.findIndex(b => t < b);
+    return k === -1 ? plan.length - 1 : k;
+  }
+  function wakeAudio() {
+    if (!tSound.checked) return;
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      if (audio.state === 'suspended') audio.resume();
+    } catch (e) { audio = null; }
+  }
+  function chime() {
+    if (!tSound.checked) return;
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      [0, .16].forEach((d, i) => {
+        const o = audio.createOscillator(), g = audio.createGain();
+        o.type = 'square'; o.frequency.value = i ? 1046 : 784;
+        g.gain.setValueAtTime(.06, audio.currentTime + d);
+        g.gain.exponentialRampToValueAtTime(.0001, audio.currentTime + d + .14);
+        o.connect(g).connect(audio.destination);
+        o.start(audio.currentTime + d); o.stop(audio.currentTime + d + .15);
+      });
+    } catch (e) {}
+  }
+  function paint() {
+    const left = Math.max(0, TOTAL - elapsed);
+    tClock.textContent = mmss(Math.ceil(left));
+    const k = stepAt(elapsed);
+    spEls.forEach((el, j) => {
+      el.classList.toggle('on', j === k && (running || elapsed > 0) && elapsed < TOTAL);
+      el.classList.toggle('done', j < k || elapsed >= TOTAL);
+    });
+    segFills.forEach((f, j) => {
+      const s0 = j ? bounds[j - 1] : 0;
+      f.style.width = Math.max(0, Math.min(1, (elapsed - s0) / plan[j].s)) * 100 + '%';
+    });
+    if (elapsed >= TOTAL) {
+      tNow.textContent = 'Time! Write your exit line in your notes.';
+      tStep.textContent = 'Sprint complete';
+    } else if (running || elapsed > 0) {
+      tNow.textContent = `Step ${k + 1} of 5 · ${plan[k].name}`;
+      tStep.textContent = `${mmss(Math.ceil(bounds[k] - elapsed))} left in this step`;
+    } else {
+      tNow.textContent = 'Ready when you are';
+      tStep.textContent = '5 steps · 20 minutes';
+    }
+    if (running && k !== lastStep) { if (lastStep !== -1) chime(); lastStep = k; }
+  }
+  function halt() { running = false; clearInterval(iv); iv = 0; }
+  function tick() {
+    const now = performance.now();
+    elapsed += (now - last) / 1000; last = now;
+    if (elapsed >= TOTAL) {
+      elapsed = TOTAL; paint(); halt(); chime();
+      tStart.textContent = 'Start';
+      return;
+    }
+    paint();
+  }
+  tStart.addEventListener('click', () => {
+    if (elapsed >= TOTAL) elapsed = 0;
+    if (running) {
+      tick(); halt();
+      tStart.textContent = elapsed >= TOTAL ? 'Start' : 'Resume';
+    } else {
+      wakeAudio();
+      running = true;
+      lastStep = stepAt(elapsed);
+      last = performance.now();
+      iv = setInterval(tick, 250);
+      tStart.textContent = 'Pause';
+    }
+    paint();
+  });
+  $('tNext').addEventListener('click', () => {
+    if (running) tick();
+    const k = stepAt(elapsed);
+    elapsed = Math.min(TOTAL, bounds[k]);
+    if (elapsed >= TOTAL) { halt(); tStart.textContent = 'Start'; }
+    paint();
+  });
+  $('tReset').addEventListener('click', () => {
+    halt(); elapsed = 0; lastStep = -1; tStart.textContent = 'Start'; paint();
+  });
+  document.addEventListener('visibilitychange', () => { if (running && !document.hidden) tick(); });
+  paint();
+
+  /* ---------- start ---------- */
+  detect();
+  if (cur === null) setCur(-1);
+})();
+</script>
+</body>
+</html>

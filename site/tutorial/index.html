@@ -1,0 +1,1116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Ten steps to build a Gemini Notebook study notebook for any reading, set of slides or unit.">
+<meta property="og:title" content="Build Your Study Notebook">
+<meta property="og:description" content="Ten steps to build a Gemini Notebook study notebook for any reading, set of slides or unit.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>[hidden] { display: none !important; }</style>
+<title>Build Your Study Notebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Silkscreen:wght@400;700&display=swap">
+<style>
+/* Layout: one reading column. A sticky progress bar on top, a hero, step 0, ten numbered step cards, then the skip box, five rules and next unit. Visual system copied from the Brain First, Bot Second deck. */
+:root {
+  --bg: #0a0c10;
+  --card: #12151b;
+  --inset: #191e26;
+  --line: #35404d;
+  --grid: #11151b;
+  --fg: #e8ecef;
+  --muted: #8a94a0;
+  --red: #ff5c74;
+  --red-soft: #3a1820;
+  --cyan: #33d4ff;
+  --cyan-text: #5ddcff;
+  --cyan-soft: #0f2d38;
+  --green: #9dff5a;
+  --green-soft: #1d3312;
+  --yellow: #ffc247;
+  --yellow-soft: #3a2c0c;
+  --clawd: #d77757;
+  --codex: #4d74f2;
+  --paper: #ffffff;
+  --on-accent: #0a0c10;
+  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
+  --font-pixel: "Silkscreen", "Courier New", monospace;
+  --hud-h: 3.5rem;
+  color-scheme: dark;
+}
+
+html { background: var(--bg); scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 2rem 2rem;
+  color: var(--fg);
+  font: 400 1.125rem/1.6 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+@media (max-width: 480px) { body { font-size: 1.0625rem; } }
+* { box-sizing: border-box; }
+img, svg { max-width: 100%; display: block; }
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--cyan-text); outline-offset: 3px; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+figure { margin: 0; }
+a { color: var(--cyan-text); text-underline-offset: 3px; }
+a:hover { color: var(--fg); }
+b, strong { font-weight: 600; }
+code { font: 500 .92em/1.4 var(--font-mono); padding: .1em .35em; background: var(--inset); border: 1px solid var(--line); overflow-wrap: anywhere; }
+.sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip { position: absolute; left: 1rem; top: -5rem; z-index: 50; padding: .75rem 1rem; background: var(--yellow); color: var(--on-accent); font: 400 .875rem/1 var(--font-pixel); text-decoration: none; }
+.skip:focus { top: .75rem; }
+
+/* ---------- deck pieces ---------- */
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.625rem 0.875rem; font: 500 0.8125rem/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.badge { padding: 0.3125rem 0.625rem 4px; border: 1px solid currentColor; font: 400 0.75rem/1 var(--font-pixel); letter-spacing: .06em; }
+.b-red { color: var(--red); background: var(--red-soft); }
+.b-cyan { color: var(--cyan-text); background: var(--cyan-soft); }
+.b-green { color: var(--green); background: var(--green-soft); }
+.b-yellow { color: var(--yellow); background: var(--yellow-soft); }
+.b-muted { color: var(--muted); background: var(--inset); }
+
+h1, h2, h3 { margin: 0; text-wrap: balance; letter-spacing: -.025em; }
+h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1.12; font-weight: 700; }
+h1 .hl, h2 .hl { padding-bottom: .1em; }
+h2 { font-size: clamp(1.75rem, 5vw, 2.5rem); line-height: 1.08; font-weight: 700; }
+h3 { font-size: clamp(1.15rem, 2.4vw, 1.3rem); line-height: 1.25; font-weight: 600; letter-spacing: -.01em; }
+.hl { padding: 0 .14em; box-decoration-break: clone; -webkit-box-decoration-break: clone; color: var(--on-accent); }
+.hl-red { background: var(--red); }
+.hl-cyan { background: var(--cyan); }
+.hl-green { background: var(--green); }
+.hl-yellow { background: var(--yellow); }
+.mono { font-family: var(--font-mono); }
+.pixel { font-family: var(--font-pixel); font-weight: 400; }
+
+.card { background: var(--card); border: 1px solid var(--line); padding: clamp(1rem, 2vw, 1.5rem); min-width: 0; }
+.card-top-red { border-top: 3px solid var(--red); }
+.card-top-cyan { border-top: 3px solid var(--cyan); }
+.card-top-green { border-top: 3px solid var(--green); }
+.card-top-yellow { border-top: 3px solid var(--yellow); }
+.label { font: 500 0.75rem/1.3 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+
+.sticker { background: var(--card); border: 2px solid var(--fg); box-shadow: 0.4375rem 0.4375rem 0 var(--red); transform: rotate(var(--tilt, -2deg)); transition: transform .25s ease, box-shadow .25s ease; }
+.sticker:hover { transform: rotate(0deg) translateY(-4px); box-shadow: 0.625rem 0.625rem 0 var(--red); }
+.sh-cyan { box-shadow: 0.4375rem 0.4375rem 0 var(--cyan); }
+.sh-cyan:hover { box-shadow: 0.625rem 0.625rem 0 var(--cyan); }
+.sh-green { box-shadow: 0.4375rem 0.4375rem 0 var(--green); }
+.sh-green:hover { box-shadow: 0.625rem 0.625rem 0 var(--green); }
+.sh-yellow { box-shadow: 0.4375rem 0.4375rem 0 var(--yellow); }
+.sh-yellow:hover { box-shadow: 0.625rem 0.625rem 0 var(--yellow); }
+.sh-codex { box-shadow: 0.4375rem 0.4375rem 0 var(--codex); }
+.sh-codex:hover { box-shadow: 0.625rem 0.625rem 0 var(--codex); }
+
+.bubble { position: relative; display: inline-block; max-width: 22ch; padding: 0.5625rem 0.75rem 0.5rem; background: var(--fg); color: var(--on-accent); font: 400 0.875rem/1.35 var(--font-pixel); letter-spacing: .02em; box-shadow: 4px 4px 0 var(--line); text-align: left; }
+.bubble::after { content: ""; position: absolute; left: 1.375rem; bottom: -0.625rem; border: 0.625rem solid transparent; border-top-color: var(--fg); border-bottom: 0; }
+.bubble:empty { display: none; }
+
+.mascot { position: relative; display: grid; justify-items: center; gap: 0.75rem; padding: 0; background: none; border: 0; cursor: pointer; }
+.mascot .bubble { position: absolute; bottom: calc(100% + 0.375rem); left: 50%; transform: translateX(-50%); width: max-content; max-width: min(15rem, 80vw); text-align: center; z-index: 3; }
+.mascot .bubble::after { left: calc(50% - 0.625rem); }
+
+.clawd-svg { width: 100%; height: auto; image-rendering: pixelated; overflow: visible; }
+.clawd-svg .c-fill { fill: var(--clawd); }
+.clawd-svg .c-eyes { fill: var(--on-accent); transform-box: fill-box; transform-origin: center; animation: blink 4.5s infinite; }
+.clawd-svg .c-legs-a { animation: step-a .5s steps(1) infinite; }
+.clawd-svg .c-legs-b { animation: step-b .5s steps(1) infinite; }
+@keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.15); } }
+@keyframes step-a { 0% { transform: translateY(0); } 50% { transform: translateY(-.6px); } }
+@keyframes step-b { 0% { transform: translateY(-.6px); } 50% { transform: translateY(0); } }
+@keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -0.375rem; } }
+.bob { animation: bob 2.6s ease-in-out infinite; }
+
+.btn { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 2.75rem; font: 400 0.8125rem/1 var(--font-pixel); padding: 0.6875rem 0.875rem 0.625rem; border: 2px solid var(--fg); background: var(--card); color: var(--fg); box-shadow: 3px 3px 0 var(--line); text-decoration: none; white-space: nowrap; }
+.btn:hover { background: var(--inset); color: var(--fg); }
+.btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--line); }
+.btn-primary { background: var(--green); color: var(--on-accent); border-color: var(--green); box-shadow: 3px 3px 0 var(--fg); }
+.btn-primary:hover { background: var(--green); color: var(--on-accent); filter: brightness(1.08); }
+.btn-big { font-size: .9375rem; line-height: 1.3; padding: .875rem 1.125rem .8125rem; white-space: normal; text-align: left; }
+.btn-copy { min-width: 6.25rem; }
+.btn-sm { min-height: 2.5rem; min-width: 5.25rem; padding: .5rem .625rem .4375rem; font-size: .75rem; }
+.btn.is-copied { background: var(--green); border-color: var(--green); color: var(--on-accent); box-shadow: 3px 3px 0 var(--fg); }
+
+.status { display: inline-flex; align-items: center; gap: 0.625rem; padding: 0.5rem 0.75rem; background: var(--card); border: 2px solid var(--fg); font: 400 0.8125rem/1 var(--font-pixel); }
+.status .dot { width: 0.75rem; height: 0.75rem; background: var(--muted); }
+.status[data-s="input"] { border-color: var(--yellow); color: var(--yellow); }
+.status[data-s="input"] .dot { background: var(--yellow); animation: pulse 1s steps(2) infinite; }
+@keyframes pulse { 50% { opacity: .2; } }
+
+.stamp { font: 400 0.75rem/1 var(--font-pixel); color: var(--red); border: 2px solid var(--red); padding: 0.375rem 0.5rem 0.3125rem; transform: rotate(-4deg); display: inline-block; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip { font: 500 0.875rem/1.2 var(--font-mono); padding: 0.5rem 0.6875rem; border: 1px solid var(--line); background: var(--inset); }
+.chip::before { content: "▸ "; color: var(--green); }
+
+/* ---------- sticky progress ---------- */
+.topbar { position: sticky; top: 0; z-index: 20; background: var(--card); border-bottom: 1px solid var(--line); }
+.tb { display: grid; gap: .5rem; padding-block: .625rem .75rem; }
+.tb-row { display: flex; align-items: center; gap: .75rem 1rem; min-width: 0; }
+.tb-title { flex: 1 1 auto; min-width: 0; font: 400 .8125rem/1.2 var(--font-pixel); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb-title b { color: var(--red); font-weight: 400; }
+.tb-count { flex: 0 0 auto; font: 400 .875rem/1 var(--font-pixel); white-space: nowrap; }
+.tb-count b { color: var(--green); font-weight: 400; }
+.tb-next { flex: 0 0 auto; display: inline-flex; align-items: center; min-height: 2.5rem; padding: .375rem .75rem; border: 1px solid var(--line); background: var(--inset); color: var(--fg); font: 500 .875rem/1.2 var(--font-mono); text-decoration: none; white-space: nowrap; }
+.tb-next:hover { border-color: var(--cyan); color: var(--cyan-text); }
+.segs { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 3px; }
+.segs i { display: block; height: .5rem; background: var(--inset); border: 1px solid var(--line); transition: background .2s ease, border-color .2s ease; }
+.segs i.on { background: var(--green); border-color: var(--green); }
+@media (max-width: 600px) {
+  .tb-title, .tb-next-name { display: none; }
+  .tb-row { justify-content: space-between; }
+}
+
+/* ---------- page ---------- */
+main { overflow-x: hidden; overflow-x: clip; }
+.wrap { width: 100%; max-width: 52rem; margin-inline: auto; padding-inline: clamp(16px, 4vw, 2rem); }
+.page { display: grid; gap: clamp(1.75rem, 5vw, 2.75rem); padding-bottom: 3rem; }
+
+/* hero */
+.hero { display: grid; gap: 1.5rem; padding-top: clamp(1.75rem, 6vw, 3.25rem); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 1.5rem 2rem; align-items: center; }
+@media (max-width: 700px) { .hero-grid { grid-template-columns: minmax(0, 1fr); } }
+.hero-copy { display: grid; gap: 1.125rem; min-width: 0; }
+.lede { font-size: clamp(1.125rem, 2.6vw, 1.3rem); line-height: 1.5; max-width: 38ch; }
+.byline { font: 500 .875rem/1.5 var(--font-mono); color: var(--muted); }
+.hero-clawd { display: grid; justify-items: center; padding-top: 4.5rem; min-width: 0; }
+.p-clawd { width: min(100%, 11rem); }
+.p-clawd .frame { display: block; width: 100%; padding: 1.5rem 1.125rem 1.125rem; background: var(--inset); border: 2px solid var(--fg); box-shadow: 0.5rem 0.5rem 0 var(--clawd); transform: rotate(-3deg); }
+@media (max-width: 700px) { .p-clawd { width: 8.5rem; } }
+
+.canvas-card { background: var(--card); border: 1px solid var(--line); border-top: 3px solid var(--red); display: grid; min-width: 0; }
+.canvas-card .cc-head { display: flex; justify-content: space-between; gap: .25rem .75rem; flex-wrap: wrap; padding: 0.625rem 1.125rem; border-bottom: 1px solid var(--line); font: 500 0.75rem/1.4 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.canvas-card .cc-body { padding: 1.125rem; display: grid; gap: 0.625rem; }
+.canvas-card .cc-title { font: 600 1.0625rem/1.3 var(--font-sans); color: var(--muted); }
+.canvas-card .cc-rule { font: 600 clamp(1.25rem, 3.6vw, 1.6rem)/1.3 var(--font-sans); }
+.canvas-card .cc-text { font-size: 1.0625rem; }
+
+.moves3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+@media (max-width: 640px) { .moves3 { grid-template-columns: minmax(0, 1fr); } }
+.mv { display: grid; gap: .25rem; align-content: start; padding: .875rem 1rem; background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--c); min-width: 0; }
+.mv b { font: 400 .875rem/1.3 var(--font-pixel); color: var(--c); }
+.mv span { font-size: 1.0625rem; line-height: 1.45; }
+
+.tip { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .75rem; align-items: baseline; font-size: 1.0625rem; color: var(--fg); }
+.tip .pixel { font-size: .75rem; color: var(--yellow); }
+
+/* step 0 */
+.need { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+@media (max-width: 560px) { .need { grid-template-columns: minmax(0, 1fr); } }
+.need li { display: grid; }
+.need label { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .75rem; align-items: start; padding: .875rem 1rem; background: var(--inset); border: 1px solid var(--line); cursor: pointer; }
+.need label:hover { border-color: var(--muted); }
+.need label:has(input:checked) { border-color: var(--green); }
+.need input { width: 1.25rem; height: 1.25rem; margin: .25rem 0 0; accent-color: var(--green); cursor: pointer; }
+.need b { display: block; }
+.need small { display: block; font-size: 1rem; line-height: 1.45; color: var(--muted); }
+
+/* step cards */
+.steps { display: grid; gap: 1.5rem; }
+.step { --acc: var(--line); position: relative; display: grid; gap: 1.25rem; padding: clamp(1.125rem, 3.5vw, 1.75rem); background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--acc); scroll-margin-top: 6.5rem; min-width: 0; transition: border-color .2s ease; }
+.step-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .875rem 1rem; align-items: start; }
+.step-num { font: 700 clamp(2.25rem, 7vw, 3rem)/.9 var(--font-pixel); color: var(--acc); }
+.step-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin-bottom: .5rem; font: 500 .8125rem/1.3 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.step h2 { font-size: clamp(1.5rem, 4.5vw, 2.125rem); line-height: 1.1; }
+.step-body { display: grid; gap: 1.125rem; min-width: 0; }
+.step .stamp { display: none; color: var(--green); border-color: var(--green); }
+.step.is-done .stamp { display: inline-block; }
+
+.do { counter-reset: d; display: grid; gap: .875rem; }
+.do > li { counter-increment: d; display: grid; grid-template-columns: 1.5rem minmax(0, 1fr); gap: .75rem; align-items: start; }
+.do > li::before { content: counter(d, lower-alpha); display: grid; place-items: center; width: 1.5rem; height: 1.5rem; margin-top: .1875rem; background: var(--acc); color: var(--on-accent); font: 400 .8125rem/1 var(--font-pixel); }
+.do > li > div { min-width: 0; }
+.do > li > div > * + * { margin-top: .75rem; }
+
+.why { padding-top: 1rem; border-top: 1px dashed var(--line); color: var(--muted); font-size: 1.0625rem; line-height: 1.55; }
+.why .pixel { color: var(--yellow); font-size: .75rem; margin-right: .5rem; letter-spacing: .04em; }
+
+.note { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .75rem; align-items: baseline; padding: .875rem 1rem; background: var(--inset); border: 1px solid var(--line); font-size: 1.0625rem; line-height: 1.5; }
+.note .pixel { font-size: .75rem; color: var(--yellow); letter-spacing: .04em; }
+.note-dashed { border-style: dashed; border-color: var(--yellow); }
+
+.done { justify-self: start; display: inline-flex; align-items: center; gap: .75rem; min-height: 3rem; padding: .625rem 1.25rem .625rem .875rem; border: 2px solid var(--fg); background: var(--inset); box-shadow: 3px 3px 0 var(--line); cursor: pointer; font: 400 .9375rem/1 var(--font-pixel); letter-spacing: .04em; user-select: none; -webkit-user-select: none; }
+.done:hover { border-color: var(--green); }
+.done input { width: 1.375rem; height: 1.375rem; margin: 0; accent-color: var(--green); cursor: pointer; flex: 0 0 auto; }
+.step.is-done > .done { background: var(--green); border-color: var(--green); color: var(--on-accent); box-shadow: 3px 3px 0 var(--fg); }
+.step.is-done > .done input { accent-color: var(--on-accent); }
+
+/* prompt cards */
+.pcard { display: grid; background: var(--inset); border: 1px solid var(--line); border-left: 4px solid var(--cyan); min-width: 0; }
+.pcard-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem .75rem; padding: .5rem .5rem .5rem .875rem; border-bottom: 1px solid var(--line); }
+.pcard-k { font: 400 .75rem/1.3 var(--font-pixel); color: var(--cyan-text); letter-spacing: .04em; }
+.prompt { padding: .875rem 1rem 1rem; font: 500 1.0625rem/1.6 var(--font-mono); overflow-wrap: anywhere; }
+.slot { padding: 0 .2em; background: var(--yellow); color: var(--on-accent); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.slot.filled { background: var(--yellow-soft); color: var(--fg); }
+
+/* step 1 */
+.timer { display: grid; gap: .75rem; width: min(100%, 22rem); padding: 1rem 1.125rem 1.125rem; background: var(--inset); border: 2px solid var(--fg); box-shadow: .4375rem .4375rem 0 var(--red); }
+.timer-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .25rem .75rem; }
+.clock { font: 700 clamp(2.75rem, 10vw, 3.5rem)/1 var(--font-pixel); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+.tbar { height: .5rem; background: var(--bg); overflow: hidden; }
+.tbar i { display: block; width: 100%; height: 100%; background: var(--red); transform-origin: left center; }
+.timer-msg { font: 400 .8125rem/1.4 var(--font-pixel); color: var(--yellow); min-height: 1.4em; }
+.timer-btns { display: flex; flex-wrap: wrap; gap: .625rem; }
+.sound { display: flex; align-items: center; gap: .5rem; font: 400 .9375rem/1.3 var(--font-mono); color: var(--muted); cursor: pointer; }
+.sound input { width: 1.125rem; height: 1.125rem; margin: 0; accent-color: var(--yellow); }
+
+/* step 2 */
+.options { display: grid; gap: 1rem; }
+.opt { display: grid; gap: .875rem; background: var(--inset); }
+.opt h3 { font-size: 1.25rem; }
+
+/* step 4 */
+.places { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+@media (max-width: 680px) { .places { grid-template-columns: minmax(0, 1fr); } }
+.place { display: grid; gap: .375rem; align-content: start; background: var(--inset); }
+.place .pixel { font-size: .875rem; }
+.place p { font-size: 1.0625rem; line-height: 1.5; }
+.sub-k { font: 400 .75rem/1.3 var(--font-pixel); color: var(--muted); letter-spacing: .04em; }
+.cite { display: inline-block; padding: .125rem .375rem; background: var(--cyan); color: var(--on-accent); font: 600 .8125rem/1.2 var(--font-mono); vertical-align: .08em; }
+
+/* cameos */
+.cameo { display: flex; align-items: flex-end; gap: 1.25rem; padding: .5rem 0 .25rem; }
+.cameo-pic { flex: 0 0 auto; width: 5.5rem; padding: 0; overflow: hidden; }
+.cameo-pic img { width: 100%; height: auto; }
+.cameo-codex img { aspect-ratio: 280 / 350; object-fit: cover; }
+.cameo-jolly { background: var(--paper); }
+.cameo-jolly img { aspect-ratio: 330 / 430; object-fit: contain; }
+.cameo-say { display: grid; gap: .625rem; justify-items: start; padding-bottom: .75rem; min-width: 0; }
+.cameo .bubble { max-width: 18ch; }
+.cameo .bubble::after { left: -0.625rem; bottom: .625rem; border: 0.625rem solid transparent; border-right-color: var(--fg); border-left: 0; }
+
+/* step 6 */
+.mock { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: .75rem; align-items: center; }
+.mock-pane { display: grid; gap: .5rem; padding: .875rem; background: var(--inset); border: 1px solid var(--line); min-width: 0; }
+.mock-k { font: 400 .6875rem/1 var(--font-pixel); color: var(--muted); margin-bottom: .25rem; letter-spacing: .04em; }
+.ln { display: block; height: .5rem; background: var(--line); }
+.ln.hit { background: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-soft); }
+.ln-row { display: flex; align-items: center; gap: .5rem; }
+.mock-arrow { font: 700 1.5rem/1 var(--font-pixel); color: var(--cyan-text); justify-self: center; }
+.mock-cap { font: 400 .875rem/1.4 var(--font-mono); color: var(--muted); }
+@media (max-width: 560px) {
+  .mock { grid-template-columns: minmax(0, 1fr); }
+  .mock-arrow { transform: rotate(90deg); }
+}
+
+/* step 7 */
+.field { display: grid; gap: .5rem; }
+.field label { font-weight: 600; font-size: 1.0625rem; }
+.field small { font: 400 .875rem/1.4 var(--font-mono); color: var(--muted); }
+textarea { width: 100%; min-height: 7.5rem; padding: .875rem 1rem; background: var(--inset); border: 2px solid var(--line); color: var(--fg); font: 400 1.0625rem/1.55 var(--font-sans); resize: vertical; }
+textarea:hover { border-color: var(--muted); }
+textarea:focus-visible { border-color: var(--cyan); }
+textarea::placeholder { color: var(--muted); opacity: 1; }
+
+/* step 9 */
+.catch { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.5rem 2rem; align-items: end; }
+@media (max-width: 620px) { .catch { grid-template-columns: minmax(0, 1fr); } }
+.receipt { justify-self: start; width: min(100%, 23rem); background: var(--paper); color: var(--on-accent); padding: 1.375rem 1.375rem 1.625rem; margin-bottom: .625rem; font: 500 1rem/1.5 var(--font-mono); transform: rotate(1.5deg); box-shadow: 0.5rem 0.5rem 0 var(--cyan); position: relative; }
+.receipt::after { content: ""; position: absolute; left: 0; right: 0; bottom: -0.625rem; height: 0.625rem; background: linear-gradient(-45deg, transparent 0.3125rem, var(--paper) 0) 0 0 / 0.625rem 0.625rem, linear-gradient(45deg, transparent 0.3125rem, var(--paper) 0) 0 0 / 0.625rem 0.625rem; }
+.receipt h3 { font: 700 1.125rem/1.1 var(--font-pixel); text-align: center; letter-spacing: .04em; }
+.receipt .rc-sub { text-align: center; font-size: 0.75rem; margin-top: 4px; }
+.receipt hr { border: 0; border-top: 2px dashed var(--on-accent); margin: 0.875rem 0; }
+.receipt .rc-q { font-weight: 600; margin-bottom: .25rem; }
+.receipt li { display: grid; grid-template-columns: 1.625rem minmax(0, 1fr); gap: 0.5rem; padding: 4px 0; }
+.receipt li label { cursor: pointer; }
+.receipt input { width: 1.125rem; height: 1.125rem; accent-color: var(--on-accent); margin: 4px 0 0; }
+.receipt input:focus-visible { outline-color: var(--codex); }
+.receipt .total { display: flex; justify-content: space-between; gap: .75rem; font-weight: 600; }
+.receipt .thanks { text-align: center; font: 400 0.75rem/1.4 var(--font-pixel); margin-top: 0.75rem; }
+
+/* step 10 */
+.exit { display: grid; gap: .5rem; padding: 1.25rem; border: 2px dashed var(--green); background: var(--green-soft); }
+.exit .pixel { font-size: .75rem; color: var(--green); letter-spacing: .04em; }
+.exit .line { font: 600 clamp(1.25rem, 4vw, 1.6rem)/1.4 var(--font-sans); }
+.exit .blank { color: var(--green); letter-spacing: .05em; }
+
+/* finish */
+.finish { display: grid; gap: .625rem; padding: clamp(1.25rem, 4vw, 1.75rem); --tilt: -1deg; box-shadow: 0.4375rem 0.4375rem 0 var(--line); scroll-margin-top: 6.5rem; }
+.finish:hover { box-shadow: 0.625rem 0.625rem 0 var(--line); }
+.finish.all { box-shadow: 0.4375rem 0.4375rem 0 var(--green); }
+.finish.all:hover { box-shadow: 0.625rem 0.625rem 0 var(--green); }
+.finish-k { font: 700 clamp(2rem, 7vw, 2.75rem)/1 var(--font-pixel); color: var(--muted); }
+.finish.all .finish-k { color: var(--green); }
+.finish p:last-child { font-size: 1.0625rem; }
+
+/* skip box */
+.skipbox { display: grid; gap: 1rem; padding: clamp(1.125rem, 3.5vw, 1.75rem); background: var(--card); border: 2px dashed var(--red); }
+.bad { display: grid; gap: .625rem; }
+.bad li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .75rem; align-items: start; padding: .75rem .875rem; background: var(--inset); border: 1px solid var(--line); }
+.bad .verdict { margin-top: .25rem; padding: .375rem .5rem .3125rem; background: var(--red); color: var(--on-accent); font: 700 .75rem/1 var(--font-pixel); white-space: nowrap; }
+.bad .bad-p { font: 500 1.0625rem/1.5 var(--font-mono); color: var(--muted); text-decoration: line-through; text-decoration-color: var(--red); text-decoration-thickness: 2px; overflow-wrap: anywhere; }
+
+/* rules */
+.sec { display: grid; gap: 1.125rem; }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: .875rem; }
+.rule { display: grid; gap: .5rem; align-content: start; }
+.rule .ico { font: 700 1.625rem/1 var(--font-pixel); }
+.rule h3 { font-size: 1.1875rem; }
+.rule p { font-size: 1.0625rem; line-height: 1.5; color: var(--muted); }
+.rule-ask { border-style: dashed; }
+
+/* next unit */
+.next { display: grid; gap: 1.125rem; padding: clamp(1.125rem, 3.5vw, 1.75rem); background: var(--card); border: 1px solid var(--line); border-top: 3px solid var(--green); --acc: var(--green); }
+.cycle-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.cycle-strip .stage { font: 400 .875rem/1 var(--font-pixel); padding: 0.6875rem 0.8125rem 0.625rem; border: 2px solid var(--line); background: var(--inset); color: var(--muted); }
+.cycle-strip .stage.on { border-color: var(--green); background: var(--green); color: var(--on-accent); }
+.cycle-strip .arr { color: var(--muted); font-family: var(--font-mono); }
+.cycle-cap { font-size: 1.0625rem; color: var(--muted); }
+.fresh-row { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; padding-top: 1rem; border-top: 1px dashed var(--line); }
+.fresh-row span { font-size: 1rem; color: var(--muted); }
+
+.foot { display: grid; gap: .375rem; padding-top: 1.25rem; border-top: 1px solid var(--line); font: 400 .875rem/1.55 var(--font-mono); color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#step-0">Skip to the steps</a>
+
+<header class="topbar">
+  <div class="wrap tb">
+    <div class="tb-row">
+      <p class="tb-title"><b aria-hidden="true">●</b> Build your study notebook</p>
+      <p class="tb-count"><b id="tb-done">0</b>/10 done</p>
+      <a class="tb-next" id="tb-next" href="#step-1"><span id="tb-next-n">Next: 1</span><span class="tb-next-name" id="tb-next-name">. Brain first</span><span aria-hidden="true">&nbsp;›</span></a>
+    </div>
+    <div class="segs" id="segs" role="progressbar" aria-label="Steps done" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" aria-valuetext="0 of 10 steps done"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+</header>
+
+<main>
+<div class="wrap page">
+
+<!-- Hero -->
+<section class="hero" aria-labelledby="page-title">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <p class="meta"><span class="badge b-red">Hands-on</span><span>Study smarter · For any course</span></p>
+      <h1 id="page-title">Build your <span class="hl hl-green">study notebook.</span></h1>
+      <p class="lede">Pick one reading, set of slides or unit. Study it with Gemini Notebook. Your brain goes first. The bot checks your work second.</p>
+      <p class="byline">About 30 minutes · 10 steps · the hands-on half of the talk <i>Brain First, Bot Second</i></p>
+    </div>
+    <div class="hero-clawd">
+      <button class="mascot p-clawd" type="button" aria-label="Clawd, the Claude Code mascot. Click for another line." data-lines="Brain first!|Retrieval beats rereading.|Click the citation. I'll wait.|I live in a terminal. Rent is cheap.">
+        <span class="bubble" aria-live="polite">Brain first!</span>
+        <span class="frame bob"><svg class="clawd-svg" viewBox="0 0 18 10" shape-rendering="crispEdges" aria-hidden="true"><path class="c-fill" d="M3 0h12v2H3zM3 2h2v2H3zM6 2h6v2H6zM13 2h2v2h-2zM1 4h16v2H1zM3 6h12v2H3z"/><path class="c-eyes" d="M5 2h1v2H5zM12 2h1v2h-1z"/><path class="c-fill c-legs-a" d="M4 8h1v2H4zM11 8h1v2h-1z"/><path class="c-fill c-legs-b" d="M6 8h1v2H6zM13 8h1v2h-1z"/></svg></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="canvas-card">
+    <div class="cc-head"><span>The rule behind every step</span><span>Steps 1 to 10</span></div>
+    <div class="cc-body">
+      <p class="cc-title">Learning with Gemini Notebook</p>
+      <p class="cc-rule">AI should <span class="hl hl-red">support your learning, not replace it.</span></p>
+      <p class="cc-text">This routine shows you how. After setup, every step uses one of three moves.</p>
+    </div>
+  </div>
+
+  <div class="moves3">
+    <div class="mv" style="--c: var(--red)"><b>Generate</b><span>You think first, on paper.</span></div>
+    <div class="mv" style="--c: var(--cyan-text)"><b>Check</b><span>The notebook checks you. Then you check the notebook.</span></div>
+    <div class="mv" style="--c: var(--green)"><b>Fix</b><span>You name the gap in your own words.</span></div>
+  </div>
+
+  <p class="tip"><span class="pixel">Tip</span><span>Keep this page open on your phone and the notebook open on your laptop. Check off each step as you go. Your checkmarks stay in this browser.</span></p>
+</section>
+
+<!-- Step 0 -->
+<section class="step" id="step-0" aria-labelledby="step-0-title" style="--acc: var(--muted)">
+  <div class="step-head">
+    <span class="step-num" aria-hidden="true">00</span>
+    <div>
+      <p class="step-meta"><span class="badge b-muted">Before you start</span></p>
+      <h2 id="step-0-title">What you need</h2>
+    </div>
+  </div>
+  <ul class="need">
+    <li><label for="need-login"><input type="checkbox" id="need-login" data-save><span><b>Your @ewu.edu login</b><small>Your EWU Google account: username@ewu.edu</small></span></label></li>
+    <li><label for="need-material"><input type="checkbox" id="need-material" data-save><span><b>One thing to study</b><small>A reading, lecture slides, a lab manual, a problem set or your notes. Step 2 shows how to get it ready.</small></span></label></li>
+    <li><label for="need-time"><input type="checkbox" id="need-time" data-save><span><b>About 30 minutes</b><small>Ten steps, in order.</small></span></label></li>
+    <li><label for="need-paper"><input type="checkbox" id="need-paper" data-save><span><b>Paper and a pen</b><small>Your brain goes first, on paper.</small></span></label></li>
+  </ul>
+</section>
+
+<ol class="steps" aria-label="Ten steps">
+
+<!-- Step 1 -->
+<li class="step" id="step-1" data-name="Brain first" style="--acc: var(--red)">
+  <div class="step-head">
+    <span class="step-num" aria-hidden="true">01</span>
+    <div>
+      <p class="step-meta"><span class="badge b-red">Generate</span><span>3 min · screen down</span><span class="stamp">Done</span></p>
+      <h2><span class="sr">Step 1: </span>Brain first</h2>
+    </div>
+  </div>
+  <div class="step-body">
+    <p class="note"><span class="pixel">Not read yet?</span><span>Skim the headings in your material first. Then close it and start.</span></p>
+    <ol class="do">
+      <li><div>Start the timer below if you want one.</div></li>
+      <li><div>Put your phone face down, or turn your laptop away.</div></li>
+      <li><div>On paper, write <b>three things you remember</b> about your topic.</div></li>
+      <li><div>Write <b>one question</b> you still have.</div></li>
+    </ol>
+    <div class="timer" role="group" aria-labelledby="timer-k">
+      <div class="timer-top">
+        <p class="label" id="timer-k">Optional timer</p>
+        <p class="clock" id="timer-clock">3:00</p>
+      </div>
+      <div class="tbar" aria-hidden="true"><i id="timer-bar"></i></div>
+      <p class="timer-msg" id="timer-msg" aria-live="polite"></p>
+      <div class="timer-btns">
+        <button class="btn btn-primary" type="button" id="timer-start">Start</button>
+        <button class="btn" type="button" id="timer-reset">Reset</button>
+      </div>
+      <label class="sound" for="timer-sound"><input type="checkbox" id="timer-sound" data-save checked>Beep when time is up</label>
+    </div>
+    <p class="why"><span class="pixel">Why</span>Pulling ideas out of your own head is called retrieval. It beats rereading, and it works even when you get some of it wrong.</p>
+  </div>
+  <label class="done" for="step-1-done"><input type="checkbox" id="step-1-done" data-save data-step="1"><span><span class="sr">Step 1 </span>Done</span></label>
+</li>
+
+<!-- Step 2 -->
+<li class="step" id="step-2" data-name="Get your materials" style="--acc: var(--yellow)">
+  <div class="step-head">
+    <span class="step-num" aria-hidden="true">02</span>
+    <div>
+      <p class="step-meta"><span class="badge b-yellow">Setup</span><span>2 min</span><span class="stamp">Done</span></p>
+      <h2><span class="sr">Step 2: </span>Get your materials</h2>
+    </div>
+  </div>
+  <div class="step-body">
+    <p>Pick the option that fits what you're studying. Any of the three works.</p>
+    <div class="options">
+      <div class="card card-top-yellow opt">
+        <p class="label">Option A</p>
+        <h3>Download a file</h3>
+        <p>Download the reading or slides from wherever your course posts them, for example, Canvas.</p>
+        <p>Save it where you can find it. You'll upload it in step 4.</p>
+      </div>
+      <div class="card card-top-cyan opt">
+        <p class="label">Option B</p>
+        <h3>Use a web link</h3>
+        <p>Is your reading a web page? Copy its link. In step 4, you'll add it as a website source.</p>
+      </div>
+      <div class="card card-top-green opt">
+        <p class="label">Option C</p>
+        <h3>Use your own notes</h3>
+        <p>Typed notes work too. In step 4, you can paste them as text or add them as a Google Drive file.</p>
+      </div>
+    </div>
+    <p class="note"><span class="pixel">OK to upload?</span><span>Upload only materials you have the right to use: your own notes, materials your instructor provides, open textbooks. If you're unsure, ask your instructor. Never upload other people's work or personal information.</span></p>
+  </div>
+  <label class="done" for="step-2-done"><input type="checkbox" id="step-2-done" data-save data-step="2"><span><span class="sr">Step 2 </span>Done</span></label>
+</li>
+
+<!-- Step 3 -->
+<li class="step" id="step-3" data-name="Open Gemini Notebook" style="--acc: var(--yellow)">
+  <div class="step-head">
+    <span class="step-num" aria-hidden="true">03</span>
+    <div>
+      <p class="step-meta"><span class="badge b-yellow">Setup</span><span>2 min</span><span class="stamp">Done</span></p>
+      <h2><span class="sr">Step 3: </span>Open Gemini Notebook</h2>
+    </div>
+  </div>
+  <div class="step-body">
+    <a class="btn btn-primary btn-big" style="justify-self:start" href="https://notebook.google.com/" target="_blank" rel="noopener">Open notebook.google.com<span class="sr"> (opens in a new tab)</span></a>
+    <ol class="do">
+      <li><div><span>Sign in with your EWU Google account: <code>username@ewu.edu</code>.</span></div></li>
+      <li><div>Don't use a personal Google account. EWU accounts carry data protections that personal accounts don't.</div></li>
+    </ol>
+    <p class="note"><span class="pixel">New name</span><span>Used NotebookLM before? Same tool. Google renamed it Gemini Notebook on July 16, 2026.</span></p>
+    <p class="note note-dashed"><span class="pixel">Heads up</span><span>Button names can shift as Google updates the app. If a screen looks different, look for three things: <b>Add sources</b>, the <b>chat box</b> and <b>Studio</b>.</span></p>
+  </div>
+  <label class="done" for="step-3-done"><input type="checkbox" id="step-3-done" data-save data-step="3"><span><span class="sr">Step 3 </span>Done</span></label>
+</li>
+
+<!-- Step 4 -->
+<li class="step" id="step-4" data-name="Create your notebook" style="--acc: var(--yellow)">
+  <div class="step-head">
+    <span class="step-num" aria-hidden="true">04</span>
+    <div>
+      <p class="step-meta"><span class="badge b-yellow">Setup</span><span>3 min</span><span class="stamp">Done</span></p>
+      <h2><span class="sr">Step 4: </span>Create your notebook</h2>
+    </div>
+  </div>
+  <div class="step-body">
+    <ol class="do">
+      <li><div>Create a new notebook.</div></li>
+      <li><div>
+        <span>Name it after your course and unit. Swap in your own names:</span>
+        <div class="pcard">
+          <div class="pcard-head"><span class="pcard-k">Notebook name</span><button class="btn btn-copy" type="button" data-copy="p-name" aria-label="Copy the notebook name">Copy</button></div>
+          <p class="prompt" id="p-name"><span class="slot">[Course]</span> · <span class="slot">[Unit]</span></p>
+        </div>
+      </div></li>
+      <li><div><span>Choose <b>Add sources</b>. Add what you got ready in step 2: upload the file, add a website link, add a Google Drive file or paste text.</span></div></li>
+      <li><div>Check that your material shows up as a source.</div></li>
+    </ol>
+    <div class="field">
+      <p class="sub-k">Add sources takes</p>
+      <ul class="chips">
+        <li class="chip">A file, like a PDF</li>
+        <li class="chip">A website link</li>
+        <li class="chip">A Google Drive file</li>
+        <li class="chip">Pasted text</li>
+      </ul>
+    </div>
+    <p class="note"><span class="pixel">Rule</span><span>Add course materials only. No classmates' information, health details or grades.</span></p>
+    <div class="field">
+      <p class="sub-k">Three places you'll use</p>
+      <div class="places">
+        <div class="card card-top-yellow place"><span class="pixel" style="color:var(--yellow)">Sources</span><p>What you add. The chat answers only from these.</p></div>
+        <div class="card card-top-cyan place"><span class="pixel" style="color:var(--cyan-text)">Chat</span><p>Ask questions here. Answers end with small numbered citations like <span class="cite">[1]</span>.</p></div>
+        <div class="card card-top-green place"><span class="pixel" style="color:var(--green)">Studio</span><p>Makes audio and video overviews, mind maps, study guides, flashcards, quizzes, infographics and slide decks.</p></div>
+      </div>
+    </div>
+  </div>
+  <label class="done" for="step-4-done"><input type="checkbox" id="step-4-done" data-save data-step="4"><span><span class="sr">Step 4 </span>Done</span></label>
+</li>
+
+<!-- Step 5 -->
+<li class="step" id="step-5" data-name="Quiz yourself" style="--acc: var(--red)">
+  <div class="step-head">
+    <span class="step-num" aria-hidden="true">05</span>
+    <div>
+      <p class="step-meta"><span class="badge b-red">Generate</span><span>5 min</span><span class="stamp">Done</span></p>
+      <h2><span class="sr">Step 5: </span>Quiz yourself in the chat</h2>
+    </div>
+  </div>
+  <div class="step-body">
+    <ol class="do">
+      <li><div>
+        <span>Copy this prompt. Swap <b>[topic]</b> for what you're studying. Then send it in the chat box.</span>
+        <div class="pcard">
+          <div class="pcard-head"><span class="pcard-k">Type this in the chat</span><button class="btn btn-copy" type="button" data-copy="p-quiz" aria-label="Copy the quiz prompt">Copy</button></div>
+          <p class="prompt" id="p-quiz">Quiz me on <span class="slot">[topic]</span>, one question at a time. Wait for my answer before the next question.</p>
+        </div>
+        <p class="tip"><span class="pixel">Any subject</span><span>Photosynthesis, supply and demand, the causes of World War I, the chain rule, informed consent.</span></p>
+      </div></li>
+      <li><div><span>Answer each question <b>without looking</b>. No peeking at your sources or your notes.</span></div></li>
+      <li><div>Keep score on your paper: got it, shaky or missed.</div></li>
+      <li><div>Stop after five to eight questions.</div></li>
+    </ol>
+    <div class="cameo">
+      <figure class="sticker sh-codex cameo-pic cameo-codex" style="--tilt: 2deg"><img src="../img/codex-pet.png" width="280" height="350" alt="The Codex pet, a blue robot mascot"></figure>
+      <div class="cameo-say">
+        <span class="status" data-s="input"><span class="dot"></span>Needs input</span>
+        <p class="bubble">I'll wait for your answer.</p>
+      </div>
+    </div>
+    <p class="why"><span class="pixel">Why</span>Quizzing yourself beats rereading. The best AI moment is when it waits for you to think.</p>
+  </div>
+  <label class="done" for="step-5-done"><input type="checkbox" id="step-5-done" data-save data-step="5"><span><span class="sr">Step 5 </span>Done</span></label>
+</li>
+
+<!-- Step 6 -->
+<li class="step" id="step-6" data-name="Check the receipts" style="--acc: var(--cyan)">
+  <div class="step-head">
+    <span class="step-num" aria-hidden="true">06</span>
+    <div>
+      <p class="step-meta"><span class="badge b-cyan">Check</span><span>3 min</span><span class="stamp">Done</span></p>
+      <h2><span class="sr">Step 6: </span>Check the receipts</h2>
+    </div>
+  </div>
+  <div class="step-body">
+    <p>Receipts are the small numbered citations, like <span class="cite">[1]</span>, at the end of the notebook's chat answers.</p>
+    <ol class="do">
+      <li><div>Pick one of the notebook's answers from your quiz.</div></li>
+      <li><div><span>Click the <span class="cite">[1]</span> at the end of it. It jumps to the exact sentence in your source.</span></div></li>
+      <li><div>Read that sentence and the ones around it.</div></li>
+      <li><div><span>Ask yourself: <b>does the source really say that?</b></span></div></li>
+    </ol>
+    <div class="mock" role="img" aria-label="Illustration: a numbered citation at the end of a chat answer points to one sentence in your source.">
+      <div class="mock-pane">
+        <span class="mock-k">Chat answer</span>
+        <i class="ln" style="width:92%"></i>
+        <i class="ln" style="width:78%"></i>
+        <span class="ln-row"><i class="ln" style="width:46%"></i><span class="cite">[1]</span></span>
+      </div>
+      <span class="mock-arrow" aria-hidden="true">→</span>
+      <div class="mock-pane">
+        <span class="mock-k">Your source</span>
+        <i class="ln" style="width:86%"></i>
+        <i class="ln hit" style="width:96%"></i>
+        <i class="ln" style="width:70%"></i>
+      </div>
+    </div>
+    <p class="mock-cap">Illustration, not a screenshot.</p>
+    <p class="why"><span class="pixel">Why</span>Grounded doesn't mean correct. The notebook can pull a sentence out of context. Clicking the citation is how you check.</p>
+  </div>
+  <label class="done" for="step-6-done"><input type="checkbox" id="step-6-done" data-save data-step="6"><span><span class="sr">Step 6 </span>Done</span></label>
+</li>
+
+<!-- Step 7 -->
+<li class="step" id="step-7" data-name="Explain it back" style="--acc: var(--red)">
+  <div class="step-head">
+    <span class="step-num" aria-hidden="true">07</span>
+    <div>
+      <p class="step-meta"><span class="badge b-red">Generate</span><span class="badge b-cyan">Check</span><span>5 min</span><span class="stamp">Done</span></p>
+      <h2><span class="sr">Step 7: </span>Explain it back</h2>
+    </div>
+  </div>
+  <div class="step-body">
+    <ol class="do">
+      <li><div>Look away from the chat and your sources.</div></li>
+      <li><div><span>Pick one key idea from your topic. Explain it in <b>3 or 4 sentences in your own words</b>. Use paper or the box below.</span></div></li>
+      <li><div>
+        <div class="field">
+          <label for="explain-text">Your explanation</label>
+          <textarea id="explain-text" rows="4" placeholder="In my own words, this idea means..."></textarea>
+          <small>Optional. Type here and the prompt below fills itself in. Saved only in this browser.</small>
+        </div>
+      </div></li>
+      <li><div>
+        <span>Copy the prompt. Swap <b>[key idea]</b> for the idea you explained. Wrote on paper? Type your sentences where it says [paste]. Then send it.</span>
+        <div class="pcard">
+          <div class="pcard-head"><span class="pcard-k">Type this in the chat</span><button class="btn btn-copy" type="button" data-copy="p-explain" aria-label="Copy the explain-it-back prompt">Copy</button></div>
+          <p class="prompt" id="p-explain">Here's my explanation of <span class="slot">[key idea]</span>: <span class="slot" id="explain-slot">[paste]</span><span id="explain-tail">. What did I miss? Cite my sources.</span></p>
+        </div>
+      </div></li>
+      <li><div><span>Read what it says you missed. Click a <span class="cite">[1]</span> to check it.</span></div></li>
+      <li><div>Add the missing piece to your paper, in your own words.</div></li>
+    </ol>
+    <p class="why"><span class="pixel">Why</span>Explaining it yourself shows you what you actually know. The notebook's job is to find your gaps, not to write the explanation.</p>
+  </div>
+  <label class="done" for="step-7-done"><input type="checkbox" id="step-7-done" data-save data-step="7"><span><span class="sr">Step 7 </span>Done</span></label>
+</li>
+
+<!-- Step 8 -->
+<li class="step" id="step-8" data-name="Flashcards from Studio" style="--acc: var(--red)">
+  <div class="step-head">
+    <span class="step-num" aria-hidden="true">08</span>
+    <div>
+      <p class="step-meta"><span class="badge b-red">Generate</span><span class="badge b-cyan">Check</span><span>4 min</span><span class="stamp">Done</span></p>
+      <h2><span class="sr">Step 8: </span>Flashcards from Studio</h2>
+    </div>
+  </div>
+  <div class="step-body">
+    <ol class="do">
+      <li><div><span>Open <b>Studio</b> and make <b>flashcards</b>.</span></div></li>
+      <li><div><span>Quiz yourself for real. Say or write each answer <b>before</b> you check the card.</span></div></li>
+      <li><div>Mark the cards you missed on your paper.</div></li>
+      <li><div>
+        <span>Pick one shaky card. Studio outputs don't show citations, so check it in the chat. Paste the card's text after this question:</span>
+        <div class="pcard">
+          <div class="pcard-head"><span class="pcard-k">Type this in the chat</span><button class="btn btn-copy" type="button" data-copy="p-where" aria-label="Copy the where-does-this-come-from prompt">Copy</button></div>
+          <p class="prompt" id="p-where">Where in my sources does this come from? <span class="slot">[paste the card]</span></p>
+        </div>
+      </div></li>
+      <li><div><span>Click the <span class="cite">[1]</span> in the answer and read the sentence.</span></div></li>
+    </ol>
+    <p class="note note-dashed"><span class="pixel">Optional</span><span>Make an <b>audio overview</b> in Studio. Replay it later this week as review. It will sound smooth, and smooth isn't the same as knowing. Quiz yourself again after you listen.</span></p>
+    <p class="why"><span class="pixel">Why</span>Flashcards only help if you quiz yourself. Just reading them is rereading, and a smooth read feels like knowing when it isn't.</p>
+  </div>
+  <label class="done" for="step-8-done"><input type="checkbox" id="step-8-done" data-save data-step="8"><span><span class="sr">Step 8 </span>Done</span></label>
+</li>
+
+<!-- Step 9 -->
+<li class="step" id="step-9" data-name="Catch one mistake" style="--acc: var(--cyan)">
+  <div class="step-head">
+    <span class="step-num" aria-hidden="true">09</span>
+    <div>
+      <p class="step-meta"><span class="badge b-cyan">Check</span><span>2 min</span><span class="stamp">Done</span></p>
+      <h2><span class="sr">Step 9: </span>Catch one mistake</h2>
+    </div>
+  </div>
+  <div class="step-body">
+    <ol class="do">
+      <li><div>Look back at the quiz, the feedback on your explanation and your flashcards.</div></li>
+      <li><div><span>Find <b>one thing</b> the notebook got wrong, oversimplified or left out.</span></div></li>
+      <li><div>Write it down in one sentence, in your own words.</div></li>
+    </ol>
+    <p class="note"><span class="pixel">Stuck?</span><span>Pick one claim and ask the chat, “Where in my sources does this come from?” Click the citation and read the sentence. Then compare it with what your class focused on. The notebook only knows your sources.</span></p>
+    <div class="catch">
+      <div class="receipt" role="group" aria-labelledby="rc-title">
+        <h3 id="rc-title">Catch report</h3>
+        <p class="rc-sub">GEMINI NOTEBOOK · ONE ANSWER</p>
+        <hr>
+        <p class="rc-q">What kind of miss?</p>
+        <ul>
+          <li><input type="checkbox" id="miss-wrong" data-save><label for="miss-wrong">It got something wrong.</label></li>
+          <li><input type="checkbox" id="miss-simple" data-save><label for="miss-simple">It oversimplified.</label></li>
+          <li><input type="checkbox" id="miss-left" data-save><label for="miss-left">It left something out.</label></li>
+        </ul>
+        <hr>
+        <p class="total"><span>Caught the AI's mistake</span><span>WIN</span></p>
+        <p class="thanks">Read it like an editor, not a fan.</p>
+      </div>
+      <div class="cameo">
+        <figure class="sticker sh-yellow cameo-pic cameo-jolly" style="--tilt: -3deg"><img src="../img/jolly.jpg" width="330" height="430" alt="Jolly, a cream plush mascot"></figure>
+        <div class="cameo-say"><p class="bubble">Caught me? That's a win.</p></div>
+      </div>
+    </div>
+    <p class="why"><span class="pixel">Why</span>Even with citations, the notebook can misread a passage, flatten a nuance or skip what your class focused on.</p>
+  </div>
+  <label class="done" for="step-9-done"><input type="checkbox" id="step-9-done" data-save data-step="9"><span><span class="sr">Step 9 </span>Done</span></label>
+</li>
+
+<!-- Step 10 -->
+<li class="step" id="step-10" data-name="Exit line" style="--acc: var(--green)">
+  <div class="step-head">
+    <span class="step-num" aria-hidden="true">10</span>
+    <div>
+      <p class="step-meta"><span class="badge b-green">Fix</span><span>1 min · in your notes</span><span class="stamp">Done</span></p>
+      <h2><span class="sr">Step 10: </span>Exit line for your notes</h2>
+    </div>
+  </div>
+  <div class="step-body">
+    <p>Write this in your notes. Fill in both blanks.</p>
+    <div class="exit">
+      <p class="pixel">Exit line</p>
+      <p class="line">AI helped me <span class="blank">___</span>. It didn't help with <span class="blank">___</span>.</p>
+    </div>
+    <p class="why"><span class="pixel">Why</span>This one is yours, so don't ask the bot to write it. Naming what AI didn't help with shows you where your own brain still has work to do.</p>
+  </div>
+  <label class="done" for="step-10-done"><input type="checkbox" id="step-10-done" data-save data-step="10"><span><span class="sr">Step 10 </span>Done</span></label>
+</li>
+
+</ol>
+
+<!-- Finish -->
+<section class="sticker finish" id="finish" aria-labelledby="finish-title">
+  <p class="finish-k" id="finish-k">0/10</p>
+  <h2 id="finish-title">Ready when you are.</h2>
+  <p id="finish-text">Start with step 1. Screen down, pen out.</p>
+</section>
+
+<!-- Skip these -->
+<section class="skipbox" aria-labelledby="skip-title">
+  <p class="meta"><span class="badge b-red">Skip these</span></p>
+  <h2 id="skip-title">Prompts that <span class="hl hl-red">think for you.</span></h2>
+  <p>Each one hands your thinking to the bot. You finish faster and learn less.</p>
+  <ul class="bad">
+    <li><span class="verdict">For you</span><span class="bad-p">“Summarize [this reading] so I don't have to read it.”</span></li>
+    <li><span class="verdict">For you</span><span class="bad-p">“Write my reflection for me.”</span></li>
+    <li><span class="verdict">For you</span><span class="bad-p">“Give me the answers to the homework.”</span></li>
+  </ul>
+  <p>The prompts in steps 5, 7 and 8 work the other way. The notebook asks, waits and checks. You do the thinking.</p>
+</section>
+
+<!-- Five rules -->
+<section class="sec" aria-labelledby="rules-title">
+  <h2 id="rules-title">Five rules for <span class="hl hl-yellow">using it well.</span></h2>
+  <ul class="rules">
+    <li class="card card-top-cyan rule"><span class="ico" style="color:var(--cyan-text)" aria-hidden="true">@</span><h3>Use your @ewu.edu account.</h3><p>Not a personal login. EWU accounts carry data protections that personal accounts don't.</p></li>
+    <li class="card card-top-red rule"><span class="ico" style="color:var(--red)" aria-hidden="true">×</span><h3>Upload course materials, not people.</h3><p>No classmates' information, health details or grades.</p></li>
+    <li class="card card-top-green rule"><span class="ico" style="color:var(--green)" aria-hidden="true">i</span><h3>Say when you used AI, and how.</h3><p>One line is enough. For example: “I used Gemini Notebook to quiz myself on the chain rule.”</p></li>
+    <li class="card card-top-yellow rule"><span class="ico" style="color:var(--yellow)" aria-hidden="true">✎</span><h3>Reflection stays yours.</h3><p>Write reflections in your own words.</p></li>
+    <li class="card rule rule-ask"><span class="ico" style="color:var(--muted)" aria-hidden="true">?</span><h3>Every course sets its own AI rules.</h3><p>Check the syllabus, and ask before you submit if you're unsure.</p></li>
+  </ul>
+</section>
+
+<!-- Next unit -->
+<section class="next" aria-labelledby="next-title">
+  <p class="meta"><span class="badge b-green">Next time</span></p>
+  <h2 id="next-title">Same routine, <span class="hl hl-green">next unit.</span></h2>
+  <ol class="do">
+    <li><div>Make a new notebook for your next unit.</div></li>
+    <li><div>Swap in a new [topic] and [key idea] in the prompts.</div></li>
+    <li><div>Keep the order. Brain first, bot second.</div></li>
+  </ol>
+  <p class="cycle-strip">
+    <span class="stage">Preview</span><span class="arr" aria-hidden="true">→</span>
+    <span class="stage">Attend</span><span class="arr" aria-hidden="true">→</span>
+    <span class="stage on">Review<span class="sr"> (this routine)</span></span><span class="arr" aria-hidden="true">→</span>
+    <span class="stage on">Study<span class="sr"> (this routine)</span></span><span class="arr" aria-hidden="true">→</span>
+    <span class="stage">Assess</span>
+  </p>
+  <p class="cycle-cap">In Saundra McGuire's Study Cycle, this routine is your Review and Study.</p>
+  <div class="fresh-row">
+    <button class="btn" type="button" id="fresh">Clear my checkmarks</button>
+    <span id="fresh-note">Start fresh for your next unit.</span>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>Companion to the talk <i>Brain First, Bot Second</i>. Works for any course.</p>
+  <p>Mascots: Clawd (Claude Code), the Codex pet (OpenAI) and Jolly (Meta).</p>
+</footer>
+
+<p class="sr" id="live" aria-live="polite"></p>
+
+</div>
+</main>
+
+<script>
+(() => {
+  const KEY = 'brain-first-notebook-tutorial-v2';
+  const TOTAL = 10;
+
+  /* storage: optional, the page works without it */
+  let state = {};
+  try {
+    const raw = localStorage.getItem(KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    if (parsed && typeof parsed === 'object') state = parsed;
+  } catch (e) { state = {}; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  const live = document.getElementById('live');
+  function announce(msg) {
+    live.textContent = '';
+    setTimeout(() => { live.textContent = msg; }, 40);
+  }
+
+  /* progress */
+  const steps = [];
+  const doneBoxes = [];
+  for (let i = 1; i <= TOTAL; i++) {
+    steps.push(document.getElementById('step-' + i));
+    doneBoxes.push(document.getElementById('step-' + i + '-done'));
+  }
+  const names = steps.map(s => s.dataset.name);
+  const segWrap = document.getElementById('segs');
+  const segs = [...segWrap.children];
+  const tbDone = document.getElementById('tb-done');
+  const tbNext = document.getElementById('tb-next');
+  const tbNextN = document.getElementById('tb-next-n');
+  const tbNextName = document.getElementById('tb-next-name');
+  const finish = document.getElementById('finish');
+  const finishK = document.getElementById('finish-k');
+  const finishTitle = document.getElementById('finish-title');
+  const finishText = document.getElementById('finish-text');
+
+  function update() {
+    let n = 0, next = -1;
+    doneBoxes.forEach((b, i) => {
+      const on = b.checked;
+      if (on) n++; else if (next < 0) next = i;
+      steps[i].classList.toggle('is-done', on);
+      segs[i].classList.toggle('on', on);
+    });
+    tbDone.textContent = n;
+    segWrap.setAttribute('aria-valuenow', String(n));
+    segWrap.setAttribute('aria-valuetext', n + ' of 10 steps done');
+    finishK.textContent = n + '/10';
+    finish.classList.toggle('all', n === TOTAL);
+    if (next < 0) {
+      tbNext.href = '#finish';
+      tbNextN.textContent = 'All done';
+      tbNextName.textContent = '';
+      finishTitle.textContent = 'Brain first, bot second.';
+      finishText.textContent = 'You did the whole routine: brain dump, quiz, receipts, explanation, flashcards, one caught mistake and an exit line. Run it again on your next unit.';
+    } else {
+      tbNext.href = '#step-' + (next + 1);
+      tbNextN.textContent = 'Next: ' + (next + 1);
+      tbNextName.textContent = '. ' + names[next];
+      if (n === 0) {
+        finishTitle.textContent = 'Ready when you are.';
+        finishText.textContent = 'Start with step 1. Screen down, pen out.';
+      } else {
+        finishTitle.textContent = 'Keep going.';
+        finishText.textContent = n + ' of 10 done. Next up: step ' + (next + 1) + ', ' + names[next] + '.';
+      }
+    }
+  }
+
+  /* saved checkboxes */
+  const saved = [...document.querySelectorAll('input[type="checkbox"][data-save]')];
+  saved.forEach(b => {
+    if (typeof state[b.id] === 'boolean') b.checked = state[b.id];
+    b.addEventListener('change', () => { state[b.id] = b.checked; save(); update(); });
+  });
+
+  /* step 7: the prompt fills itself in */
+  const ta = document.getElementById('explain-text');
+  const slot = document.getElementById('explain-slot');
+  const tail = document.getElementById('explain-tail');
+  const TAIL = ' What did I miss? Cite my sources.';
+  function compose() {
+    const v = ta.value.replace(/\s+/g, ' ').trim();
+    if (v) {
+      slot.textContent = v;
+      slot.classList.add('filled');
+      tail.textContent = (/[.!?]$/.test(v) ? '' : '.') + TAIL;
+    } else {
+      slot.textContent = '[paste]';
+      slot.classList.remove('filled');
+      tail.textContent = '.' + TAIL;
+    }
+  }
+  if (typeof state['explain-text'] === 'string') ta.value = state['explain-text'];
+  ta.addEventListener('input', () => { compose(); state['explain-text'] = ta.value; save(); });
+  compose();
+  update();
+
+  /* copy buttons */
+  function selectText(el) {
+    try {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      return true;
+    } catch (e) { return false; }
+  }
+  document.querySelectorAll('[data-copy]').forEach(btn => {
+    const label = btn.textContent;
+    let timer;
+    function show(text, ok) {
+      btn.textContent = text;
+      btn.classList.toggle('is-copied', ok);
+      clearTimeout(timer);
+      timer = setTimeout(() => { btn.textContent = label; btn.classList.remove('is-copied'); }, 2200);
+    }
+    btn.addEventListener('click', () => {
+      const el = document.getElementById(btn.dataset.copy);
+      if (!el) return;
+      const text = el.textContent.replace(/\s+/g, ' ').trim();
+      const ok = () => { show('Copied', true); announce('Copied.'); };
+      const fallback = () => {
+        selectText(el);
+        let copied = false;
+        try { copied = document.execCommand('copy'); } catch (e) { copied = false; }
+        if (copied) { ok(); return; }
+        show('Selected', false);
+        announce('Text selected. Use your copy command to copy it.');
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(ok).catch(fallback);
+        } else {
+          fallback();
+        }
+      } catch (e) { fallback(); }
+    });
+  });
+
+  /* step 1 timer */
+  const DUR = 180000;
+  const clock = document.getElementById('timer-clock');
+  const bar = document.getElementById('timer-bar');
+  const msg = document.getElementById('timer-msg');
+  const startBtn = document.getElementById('timer-start');
+  const resetBtn = document.getElementById('timer-reset');
+  const soundBox = document.getElementById('timer-sound');
+  let left = DUR, endAt = 0, tick = null, actx = null;
+  function fmt(ms) {
+    const s = Math.max(0, Math.ceil(ms / 1000));
+    return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  }
+  function paint() {
+    clock.textContent = fmt(left);
+    bar.style.transform = 'scaleX(' + Math.max(0, left / DUR) + ')';
+  }
+  function stopTick() { clearInterval(tick); tick = null; }
+  function chime() {
+    if (!actx) return;
+    try {
+      const t0 = actx.currentTime;
+      [0, 0.35, 0.7].forEach(d => {
+        const o = actx.createOscillator();
+        const g = actx.createGain();
+        o.type = 'square';
+        o.frequency.value = 880;
+        g.gain.setValueAtTime(0.0001, t0 + d);
+        g.gain.exponentialRampToValueAtTime(0.12, t0 + d + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + d + 0.25);
+        o.connect(g);
+        g.connect(actx.destination);
+        o.start(t0 + d);
+        o.stop(t0 + d + 0.3);
+      });
+    } catch (e) {}
+  }
+  function done() {
+    stopTick();
+    left = 0;
+    paint();
+    startBtn.textContent = 'Start';
+    msg.textContent = 'Time. Flip your screen back over.';
+    if (soundBox.checked) chime();
+  }
+  startBtn.addEventListener('click', () => {
+    if (tick) {
+      left = Math.max(0, endAt - Date.now());
+      stopTick();
+      startBtn.textContent = 'Resume';
+      msg.textContent = 'Paused.';
+      paint();
+      return;
+    }
+    if (left <= 0) left = DUR;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!actx && AC) actx = new AC();
+      if (actx && actx.state === 'suspended') actx.resume();
+    } catch (e) { actx = null; }
+    endAt = Date.now() + left;
+    startBtn.textContent = 'Pause';
+    msg.textContent = 'Go. Screen down.';
+    tick = setInterval(() => {
+      left = endAt - Date.now();
+      if (left <= 0) done(); else paint();
+    }, 250);
+    paint();
+  });
+  resetBtn.addEventListener('click', () => {
+    stopTick();
+    left = DUR;
+    startBtn.textContent = 'Start';
+    msg.textContent = '';
+    paint();
+  });
+  paint();
+
+  /* Clawd talks */
+  document.querySelectorAll('.mascot[data-lines]').forEach(m => {
+    const lines = m.dataset.lines.split('|');
+    const bubble = m.querySelector('.bubble');
+    let k = 1;
+    m.addEventListener('click', () => {
+      bubble.textContent = lines[k % lines.length];
+      k++;
+    });
+  });
+
+  /* clear checkmarks for the next unit, with a short undo */
+  const fresh = document.getElementById('fresh');
+  const freshNote = document.getElementById('fresh-note');
+  const freshLabel = fresh.textContent;
+  const freshNoteText = freshNote.textContent;
+  const clearable = saved.filter(b => b.id !== 'timer-sound');
+  let undo = null, undoTimer;
+  function endUndo() {
+    undo = null;
+    fresh.textContent = freshLabel;
+    freshNote.textContent = freshNoteText;
+  }
+  fresh.addEventListener('click', () => {
+    clearTimeout(undoTimer);
+    if (undo) {
+      clearable.forEach(b => { b.checked = !!undo[b.id]; state[b.id] = b.checked; });
+      ta.value = undo.text;
+      state['explain-text'] = ta.value;
+      save(); compose(); update(); endUndo();
+      announce('Your checkmarks are back.');
+      return;
+    }
+    undo = { text: ta.value };
+    clearable.forEach(b => { undo[b.id] = b.checked; b.checked = false; state[b.id] = false; });
+    ta.value = '';
+    state['explain-text'] = '';
+    save(); compose(); update();
+    fresh.textContent = 'Undo';
+    freshNote.textContent = 'Cleared. Undo within 8 seconds.';
+    announce('Checkmarks cleared. Press Undo within 8 seconds to bring them back.');
+    undoTimer = setTimeout(endUndo, 8000);
+  });
+})();
+</script>
+</body>
+</html>

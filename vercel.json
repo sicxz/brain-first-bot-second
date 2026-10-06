@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "echo 'No dependencies'",
+  "buildCommand": "echo 'site/ is prebuilt. Run python3 scripts/build.py locally before you push.'",
+  "outputDirectory": "site"
+}
